@@ -669,4 +669,16 @@ body {
   .wrapper{
     width: 100vw;
   }
+  .scroll_img{
+    overflow-x: hidden;
+  }
+  .wrapper_cog {
+  width: 100vw;
+  top: initial;
+  left: initial;
+
+}
+  .settings-card .paramètre_chaque_couleur {
+    width: 100vw;
+}
   }
