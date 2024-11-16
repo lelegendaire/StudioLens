@@ -778,10 +778,10 @@
           image_preview.style.width = img.naturalWidth / 2 + "px"; // Largeur de l'image
           image_preview.style.height = img.naturalHeight / 2 + "px"; // Hauteur de l'image
           drag_line.style.height = img.naturalHeight / 2 + "px"; // Hauteur de l'image
-        } else if(window.width < 738){
-          image_preview.style.width = window.width + "px"; // Largeur de l'image
-          image_preview.style.height = ((window.width * img.naturalHeight)/img.naturalWidth) + "px"; // Hauteur de l'image
-          drag_line.style.height = ((window.width * img.naturalHeight)/img.naturalWidth) + "px"; // Hauteur de l'image
+        } else if(window.getComputedStyle(document.body).getPropertyValue("width") < 738){
+          image_preview.style.width = window.getComputedStyle(document.body).getPropertyValue("width") + "px"; // Largeur de l'image
+          image_preview.style.height = ((window.getComputedStyle(document.body).getPropertyValue("width") * img.naturalHeight)/img.naturalWidth) + "px"; // Hauteur de l'image
+          drag_line.style.height = ((window.getComputedStyle(document.body).getPropertyValue("width") * img.naturalHeight)/img.naturalWidth) + "px"; // Hauteur de l'image
         } else {
           image_preview.style.width = img.naturalWidth + "px"; // Largeur de l'image
           image_preview.style.height = img.naturalHeight + "px"; // Hauteur de l'image
