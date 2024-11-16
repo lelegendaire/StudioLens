@@ -774,19 +774,35 @@
       let img = new Image();
       img.src = uploadedFile.ref;
       img.onload = function () {
-        if (img.naturalWidth > 850 || img.naturalHeight > 670) {
-          image_preview.style.width = img.naturalWidth / 2 + "px"; // Largeur de l'image
-          image_preview.style.height = img.naturalHeight / 2 + "px"; // Hauteur de l'image
-          drag_line.style.height = img.naturalHeight / 2 + "px"; // Hauteur de l'image
-        } else if(window.getComputedStyle(document.body).getPropertyValue("width") < 738){
-          image_preview.style.width = window.getComputedStyle(document.body).getPropertyValue("width") + "px"; // Largeur de l'image
-          image_preview.style.height = ((window.getComputedStyle(document.body).getPropertyValue("width") * img.naturalHeight)/img.naturalWidth) + "px"; // Hauteur de l'image
-          drag_line.style.height = ((window.getComputedStyle(document.body).getPropertyValue("width") * img.naturalHeight)/img.naturalWidth) + "px"; // Hauteur de l'image
-        } else {
-          image_preview.style.width = img.naturalWidth + "px"; // Largeur de l'image
-          image_preview.style.height = img.naturalHeight + "px"; // Hauteur de l'image
-          drag_line.style.height = img.naturalHeight + "px"; // Hauteur de l'image
-        }
+        // Récupération des dimensions naturelles de l'image
+const naturalWidth = img.naturalWidth;
+const naturalHeight = img.naturalHeight;
+
+// Récupération de la largeur de l'écran
+const screenWidth = parseFloat(window.getComputedStyle(document.body).getPropertyValue("width"));
+
+if (naturalWidth > 850 || naturalHeight > 670) {
+    // Si l'image est grande, réduction de moitié
+    const reducedWidth = naturalWidth / 2;
+    const reducedHeight = naturalHeight / 2;
+
+    image_preview.style.width = reducedWidth + "px";
+    image_preview.style.height = reducedHeight + "px";
+    drag_line.style.height = reducedHeight + "px";
+} else if (screenWidth < 738) {
+    // Si la largeur de l'écran est petite, ajuster en fonction de la largeur de l'écran
+    const scaledHeight = (screenWidth * naturalHeight) / naturalWidth;
+
+    image_preview.style.width = screenWidth + "px";
+    image_preview.style.height = scaledHeight + "px";
+    drag_line.style.height = scaledHeight + "px";
+} else {
+    // Sinon, garder les dimensions naturelles
+    image_preview.style.width = naturalWidth + "px";
+    image_preview.style.height = naturalHeight + "px";
+    drag_line.style.height = naturalHeight + "px";
+}
+
         const nb_img_generer = document.querySelectorAll(".nb_img_generer img");
         let afterImg = document.querySelector(
           ".preview_right .image_preview .after_img"
