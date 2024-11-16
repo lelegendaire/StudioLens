@@ -767,46 +767,63 @@ if ((naturalWidth > 850 || naturalHeight > 670) && screenWidth > 738) {
         //nb_img_generer[6].src = applyFilters(img, variable_couleur_pastel);
       };
     }
+const track = document.getElementById("image-track");
 
-    const track = document.getElementById("image-track");
+// Fonction pour gérer les événements de départ (mousedown / touchstart)
+const handleStart = (e) => {
+  // Récupérer la position initiale (clientX pour souris ou touches[0].clientX pour tactile)
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  track.dataset.mouseDownAt = clientX;
+};
 
-    window.onmousedown = (e) => {
-      track.dataset.mouseDownAt = e.clientX;
-    };
-    window.onmouseup = () => {
-      track.dataset.mouseDownAt = "0";
-      track.dataset.prevPercentage = track.dataset.percentage;
-    };
+// Fonction pour gérer les événements de fin (mouseup / touchend)
+const handleEnd = () => {
+  track.dataset.mouseDownAt = "0";
+  track.dataset.prevPercentage = track.dataset.percentage;
+};
 
-    window.onmousemove = (e) => {
-      if (track.dataset.mouseDownAt === "0") return;
+// Fonction pour gérer le mouvement (mousemove / touchmove)
+const handleMove = (e) => {
+  // Vérifier si une interaction a commencé
+  if (track.dataset.mouseDownAt === "0") return;
 
-      const mouseDelta = parseFloat(track.dataset.mouseDownAt) - e.clientX,
-        maxDelta = window.innerWidth / 2;
+  // Récupérer la position actuelle (clientX pour souris ou touches[0].clientX pour tactile)
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
 
-      const percentage = (mouseDelta / maxDelta) * -100,
-        nextPercentageUnconstrained =
-          parseFloat(track.dataset.prevPercentage) + percentage,
-        nextPercentage = Math.max(
-          Math.min(nextPercentageUnconstrained, 0),
-          -100
-        );
+  const mouseDelta = parseFloat(track.dataset.mouseDownAt) - clientX,
+    maxDelta = window.innerWidth / 2;
 
-      track.dataset.percentage = nextPercentage;
+  const percentage = (mouseDelta / maxDelta) * -100,
+    nextPercentageUnconstrained =
+      parseFloat(track.dataset.prevPercentage) + percentage,
+    nextPercentage = Math.max(Math.min(nextPercentageUnconstrained, 0), -100);
 
-      track.animate(
-        {
-          transform: `translate(${nextPercentage}%, 0%)`,
-        },
-        { duration: 1200, fill: "forwards" }
-      );
+  track.dataset.percentage = nextPercentage;
 
-      for (const image of track.getElementsByClassName("image")) {
-        image.animate(
-          {
-            objectPosition: `${100 + nextPercentage}% center`,
-          },
-          { duration: 1200, fill: "forwards" }
-        );
-      }
-    };
+  track.animate(
+    {
+      transform: `translate(${nextPercentage}%, 0%)`,
+    },
+    { duration: 1200, fill: "forwards" }
+  );
+
+  for (const image of track.getElementsByClassName("image")) {
+    image.animate(
+      {
+        objectPosition: `${100 + nextPercentage}% center`,
+      },
+      { duration: 1200, fill: "forwards" }
+    );
+  }
+};
+
+// Écouteurs pour les événements de souris
+window.addEventListener("mousedown", handleStart);
+window.addEventListener("mouseup", handleEnd);
+window.addEventListener("mousemove", handleMove);
+
+// Écouteurs pour les événements tactiles
+window.addEventListener("touchstart", handleStart);
+window.addEventListener("touchend", handleEnd);
+window.addEventListener("touchmove", handleMove);
+
