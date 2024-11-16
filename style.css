@@ -649,6 +649,7 @@ body {
     justify-content: initial;
     flex-direction: initial;
     gap: 3vh;
+    overflow: scroll;
   }
 
   }
