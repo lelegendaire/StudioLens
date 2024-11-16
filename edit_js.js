@@ -713,7 +713,7 @@ const naturalHeight = img.naturalHeight;
 // Récupération de la largeur de l'écran
 const screenWidth = parseFloat(window.getComputedStyle(document.body).getPropertyValue("width"));
 console.log(screenWidth)
-if (naturalWidth > 850 || naturalHeight > 670) {
+if ((naturalWidth > 850 || naturalHeight > 670) && screenWidth > 738) {
     // Si l'image est grande, réduction de moitié
     const reducedWidth = naturalWidth / 2;
     const reducedHeight = naturalHeight / 2;
