@@ -651,8 +651,7 @@ body {
     justify-content: initial;
     flex-direction: initial;
     gap: 3vh;
-    overflow-x: scroll;
-    height: 20vh;
+    
   }
   .nb_img_generer::-webkit-scrollbar-thumb {
   background-color: transparent;
