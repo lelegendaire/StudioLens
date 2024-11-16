@@ -419,13 +419,13 @@ body {
   margin-bottom: 10px;
 }
 
-.wrapper_img .nb_img_generer img {
+.wrapper_img .nb_img_generer .image {
   transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
 }
-.wrapper_img .nb_img_generer img:hover {
+.wrapper_img .nb_img_generer .image:hover {
   transform: scale(110%);
 }
-.wrapper_img .nb_img_generer img.image.select {
+.wrapper_img .nb_img_generer .image.select {
   border-color: #7a9bef;
   box-shadow: 0 0 3px 3px #6990f2;
 }
