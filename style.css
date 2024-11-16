@@ -188,7 +188,6 @@ body {
   object-position: 100% center;
 }
 .nb_img_generer {
-  margin-right: 7vw;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -643,7 +642,6 @@ body {
   /* Styles */
   .nb_img_generer {
     margin-bottom: 5vw;
-    margin-left: 7vw;
     display: flex;
     width: 100vw;
     user-select: none;
