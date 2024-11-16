@@ -38,27 +38,27 @@
       </div>
       
     </div>
-    <div class="nb_img_generer">
+    <div class="nb_img_generer" id="image-track">
       <img
         src="https://cdn.pixabay.com/photo/2021/08/25/20/42/field-6574455_1280.jpg"
         alt="img1"
-        class="select"
+        class="image select"
       />
       <img
         src="https://cdn.pixabay.com/photo/2021/08/25/20/42/field-6574455_1280.jpg"
-        alt="img2"
+        alt="img2" class="image"
       />
       <img
         src="https://cdn.pixabay.com/photo/2021/08/25/20/42/field-6574455_1280.jpg"
-        alt="img3"
+        alt="img3" class="image"
       />
       <img
         src="https://cdn.pixabay.com/photo/2021/08/25/20/42/field-6574455_1280.jpg"
-        alt="img4"
+        alt="img4" class="image"
       />
       <img
         src="https://cdn.pixabay.com/photo/2021/08/25/20/42/field-6574455_1280.jpg"
-        alt="img5"
+        alt="img5" class="image"
       />
     </div>
 
@@ -819,5 +819,48 @@
         //nb_img_generer[6].src = applyFilters(img, variable_couleur_pastel);
       };
     }
+
+    const track = document.getElementById("image-track");
+
+    window.onmousedown = (e) => {
+      track.dataset.mouseDownAt = e.clientX;
+    };
+    window.onmouseup = () => {
+      track.dataset.mouseDownAt = "0";
+      track.dataset.prevPercentage = track.dataset.percentage;
+    };
+
+    window.onmousemove = (e) => {
+      if (track.dataset.mouseDownAt === "0") return;
+
+      const mouseDelta = parseFloat(track.dataset.mouseDownAt) - e.clientX,
+        maxDelta = window.innerWidth / 2;
+
+      const percentage = (mouseDelta / maxDelta) * -100,
+        nextPercentageUnconstrained =
+          parseFloat(track.dataset.prevPercentage) + percentage,
+        nextPercentage = Math.max(
+          Math.min(nextPercentageUnconstrained, 0),
+          -100
+        );
+
+      track.dataset.percentage = nextPercentage;
+
+      track.animate(
+        {
+          transform: `translate(${nextPercentage}%, 0%)`,
+        },
+        { duration: 1200, fill: "forwards" }
+      );
+
+      for (const image of track.getElementsByClassName("image")) {
+        image.animate(
+          {
+            objectPosition: `${100 + nextPercentage}% center`,
+          },
+          { duration: 1200, fill: "forwards" }
+        );
+      }
+    };
   </script>
 </html>
