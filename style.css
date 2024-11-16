@@ -667,6 +667,6 @@ body {
   height: initial;
 }
   .wrapper{
-    height: 100vw;
+    width: 100vw;
   }
   }
