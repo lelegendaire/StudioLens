@@ -36,30 +36,34 @@
           </div>
         </div>
       </div>
-      <div class="nb_img_generer">
-        <img
-          src="https://cdn.pixabay.com/photo/2021/08/25/20/42/field-6574455_1280.jpg"
-          alt="img1"
-          class="select"
-        />
-        <img
-          src="https://cdn.pixabay.com/photo/2021/08/25/20/42/field-6574455_1280.jpg"
-          alt="img2"
-        />
-        <img
-          src="https://cdn.pixabay.com/photo/2021/08/25/20/42/field-6574455_1280.jpg"
-          alt="img3"
-        />
-        <img
-          src="https://cdn.pixabay.com/photo/2021/08/25/20/42/field-6574455_1280.jpg"
-          alt="img4"
-        />
-        <img
-          src="https://cdn.pixabay.com/photo/2021/08/25/20/42/field-6574455_1280.jpg"
-          alt="img5"
-        />
-      </div>
+      
     </div>
+    <div class="nb_img_generer">
+      <img
+        src="https://cdn.pixabay.com/photo/2021/08/25/20/42/field-6574455_1280.jpg"
+        alt="img1"
+        class="select"
+      />
+      <img
+        src="https://cdn.pixabay.com/photo/2021/08/25/20/42/field-6574455_1280.jpg"
+        alt="img2"
+      />
+      <img
+        src="https://cdn.pixabay.com/photo/2021/08/25/20/42/field-6574455_1280.jpg"
+        alt="img3"
+      />
+      <img
+        src="https://cdn.pixabay.com/photo/2021/08/25/20/42/field-6574455_1280.jpg"
+        alt="img4"
+      />
+      <img
+        src="https://cdn.pixabay.com/photo/2021/08/25/20/42/field-6574455_1280.jpg"
+        alt="img5"
+      />
+    </div>
+
+
+
   </body>
   <script>
     const slider = document.querySelector(".slider input");
@@ -774,6 +778,10 @@
           image_preview.style.width = img.naturalWidth / 2 + "px"; // Largeur de l'image
           image_preview.style.height = img.naturalHeight / 2 + "px"; // Hauteur de l'image
           drag_line.style.height = img.naturalHeight / 2 + "px"; // Hauteur de l'image
+        } else if(window.width < 738){
+          image_preview.style.width = window.width + "px"; // Largeur de l'image
+          image_preview.style.height = ((window.width * img.naturalHeight)/img.naturalWidth) + "px"; // Hauteur de l'image
+          drag_line.style.height = ((window.width * img.naturalHeight)/img.naturalWidth) + "px"; // Hauteur de l'image
         } else {
           image_preview.style.width = img.naturalWidth + "px"; // Largeur de l'image
           image_preview.style.height = img.naturalHeight + "px"; // Hauteur de l'image
