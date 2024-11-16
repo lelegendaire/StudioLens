@@ -642,6 +642,8 @@ body {
   /* Styles */
   .nb_img_generer {
     margin-bottom: 5vw;
+    margin-right: 0px:
+    margin-left: 5vw;
     display: flex;
     width: 100vw;
     user-select: none;
