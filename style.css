@@ -184,6 +184,8 @@ body {
   height: 120px;
   object-fit: cover;
   border-radius: 0.35em;
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  object-position: 100% center;
 }
 .nb_img_generer {
   margin-right: 7vw;
@@ -419,9 +421,7 @@ body {
   margin-bottom: 10px;
 }
 
- .nb_img_generer .image {
-  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
-}
+
  .nb_img_generer .image:hover {
   transform: scale(110%);
 }
