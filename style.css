@@ -667,4 +667,7 @@ body {
 .wrapper_img{
   height: initial;
 }
+  .wrapper{
+    height: 100vw;
+  }
   }
