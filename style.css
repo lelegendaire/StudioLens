@@ -19,7 +19,7 @@ body {
   /*background-color: #000000;*/
   background: linear-gradient(#0f0f0f94,#0f0f0f94), url(logo.png) center center / cover;
   display: flex;
-  flex-direction: column;
+  flex-direction: initial;
   justify-content: center;
   align-items: center;
   width: 100%;
