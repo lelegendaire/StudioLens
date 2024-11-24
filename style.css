@@ -193,6 +193,7 @@ body {
   justify-content: center;
   align-items: center;
   gap: 3vh;
+  margin-right: 100%;
 }
 .preview_right {
   position: relative;
@@ -649,6 +650,7 @@ body {
     justify-content: initial;
     flex-direction: initial;
     gap: 3vh;
+    margin-right: 0%;
     
   }
   .nb_img_generer::-webkit-scrollbar-thumb {
