@@ -728,46 +728,7 @@ if ((naturalWidth > 850 || naturalHeight > 670) && screenWidth > 738) {
     image_preview.style.width = screenWidth + "px";
     image_preview.style.height = scaledHeight + "px";
     drag_line.style.height = scaledHeight + "px";
-} else {
-    // Sinon, garder les dimensions naturelles
-    image_preview.style.width = naturalWidth + "px";
-    image_preview.style.height = naturalHeight + "px";
-    drag_line.style.height = naturalHeight + "px";
-}
-
-        const nb_img_generer = document.querySelectorAll(".nb_img_generer img");
-        let afterImg = document.querySelector(
-          ".preview_right .image_preview .after_img"
-        );
-
-        afterImg.style.backgroundImage =
-          "url(" + displayFilteredImage(img, variable_couleur_sunset) + ")";
-
-        nb_img_generer[0].src = displayFilteredImage(
-          img,
-          variable_couleur_sunset
-        );
-        nb_img_generer[1].src = displayFilteredImage(
-          img,
-          variable_couleur_cinema_noir
-        );
-        nb_img_generer[2].src = displayFilteredImage(
-          img,
-          variable_couleur_hiver
-        );
-        nb_img_generer[3].src = displayFilteredImage(
-          img,
-          variable_couleur_vintage
-        );
-        nb_img_generer[4].src = displayFilteredImage(
-          img,
-          variable_couleur_nocturne
-        );
-        //nb_img_generer[5].src = applyFilters(img, variable_couleur_urbain);
-        //nb_img_generer[6].src = applyFilters(img, variable_couleur_pastel);
-      };
-    }
-const track = document.getElementById("image-track");
+    const track = document.getElementById("image-track");
 
 // Fonction pour gérer les événements de départ (mousedown / touchstart)
 const handleStart = (e) => {
@@ -826,4 +787,44 @@ window.addEventListener("mousemove", handleMove);
 window.addEventListener("touchstart", handleStart);
 window.addEventListener("touchend", handleEnd);
 window.addEventListener("touchmove", handleMove);
+} else {
+    // Sinon, garder les dimensions naturelles
+    image_preview.style.width = naturalWidth + "px";
+    image_preview.style.height = naturalHeight + "px";
+    drag_line.style.height = naturalHeight + "px";
+}
+
+        const nb_img_generer = document.querySelectorAll(".nb_img_generer img");
+        let afterImg = document.querySelector(
+          ".preview_right .image_preview .after_img"
+        );
+
+        afterImg.style.backgroundImage =
+          "url(" + displayFilteredImage(img, variable_couleur_sunset) + ")";
+
+        nb_img_generer[0].src = displayFilteredImage(
+          img,
+          variable_couleur_sunset
+        );
+        nb_img_generer[1].src = displayFilteredImage(
+          img,
+          variable_couleur_cinema_noir
+        );
+        nb_img_generer[2].src = displayFilteredImage(
+          img,
+          variable_couleur_hiver
+        );
+        nb_img_generer[3].src = displayFilteredImage(
+          img,
+          variable_couleur_vintage
+        );
+        nb_img_generer[4].src = displayFilteredImage(
+          img,
+          variable_couleur_nocturne
+        );
+        //nb_img_generer[5].src = applyFilters(img, variable_couleur_urbain);
+        //nb_img_generer[6].src = applyFilters(img, variable_couleur_pastel);
+      };
+    }
+
 
