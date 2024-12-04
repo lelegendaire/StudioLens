@@ -83,18 +83,18 @@ generate_btn.addEventListener('click', () => {
     } else if (imageDisplay.src) {
         window.location.href = "edit.html"
     } else {
-        alert("Télécharger une photo, ou veuillez appuyer sur 'entrer' pour le lien")
+        popup_notif_create("Télécharger une photo, ou veuillez appuyer sur 'entrer' pour le lien", "oui")
     }
 });
 form.addEventListener('click', (event) => {
-    alert("Nous prenons seulement JPEG, PNG, GIF, WEBP, BMP, SVG, TIFF, AVIF")
+    popup_notif_create("Nous prenons seulement JPEG, PNG, GIF, WEBP, BMP, SVG, TIFF, AVIF", "oui")
     let uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || [];
 
     if (uploadedFiles.length > 0) {
         let uploadedFile = uploadedFiles[0]; // Il n'y a qu'un seul fichier dans le localStorage
-        alert("Vous avez déjà importé un fichier")
+        popup_notif_create("Vous avez déjà importé un fichier", "oui")
     } else if (linkImg.value) {
-        alert("Vous avez déjà importé un fichier par le lien")
+        popup_notif_create("Vous avez déjà importé un fichier par le lien", "oui")
     } else {
 
         fileInput.click();
@@ -347,33 +347,90 @@ function delete_file() {
     console.log(deleteButtons)
     deleteButtons.forEach(function (button) {
         button.addEventListener('click', function (event) {
-            let confirmation = confirm("Êtes-vous sûr de vouloir supprimer ce fichier ?");
-            if (confirmation) {
-                const parentContent = event.target.closest('.content');
-                const fileNameElement = document.querySelector(".uploaded-area .name");
-                const fileName = fileNameElement.textContent.split(' • ')[0];
 
-                let uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || [];
+            popup_notif_create("Êtes-vous sûr de vouloir supprimer ce fichier ?", true, true).then((confirmation) => {
+                if (confirmation) {
+                    const parentContent = event.target.closest('.content');
+                    const fileNameElement = document.querySelector(".uploaded-area .name");
+                    const fileName = fileNameElement.textContent.split(' • ')[0];
 
-                console.log("Avant la suppression : ", uploadedFiles);
+                    let uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || [];
 
-                // Filtrer les fichiers pour exclure celui à supprimer
-                uploadedFiles = uploadedFiles.filter(function (file) {
-                    console.log("Comparaison : ", file.name, " avec ", fileName);
-                    return file.name !== fileName;
-                });
+                    console.log("Avant la suppression : ", uploadedFiles);
 
-                console.log("Après la suppression : ", uploadedFiles);
+                    // Filtrer les fichiers pour exclure celui à supprimer
+                    uploadedFiles = uploadedFiles.filter(function (file) {
+                        console.log("Comparaison : ", file.name, " avec ", fileName);
+                        return file.name !== fileName;
+                    });
 
-                // Mettez à jour la liste des fichiers dans localStorage
-                localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
+                    console.log("Après la suppression : ", uploadedFiles);
 
-                // Supprimez le nœud HTML correspondant
-                document.querySelector(".uploaded-area .row").remove();
-                document.querySelector(".separator2").remove()
+                    // Mettez à jour la liste des fichiers dans localStorage
+                    localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
 
-            }
+                    // Supprimez le nœud HTML correspondant
+                    document.querySelector(".uploaded-area .row").remove();
+                    document.querySelector(".separator2").remove()
+
+                }
+            });
         });
     });
 }
+function popup_notif_create(text_popup, valid, annul) {
+    return new Promise((resolve, reject) => {
+        const existingPopup = document.querySelector(".popup_notif");
+        if (existingPopup) {
+            existingPopup.classList.add("shake");
+            setTimeout(() => {
+                existingPopup.classList.remove("shake");
+            }, 200);
+            return;
+        }
+
+        const popup_notif = document.createElement("div");
+        popup_notif.classList.add("popup_notif");
+        setTimeout(() => {
+            popup_notif.style.transform = "scale(100%)";
+        }, 10);
+
+        document.body.appendChild(popup_notif);
+
+        const popup_text = document.createElement("h4");
+        popup_text.textContent = text_popup;
+        popup_notif.appendChild(popup_text);
+
+        const popup_btn = document.createElement("div");
+        popup_btn.classList.add("popup_notif_btn");
+        popup_notif.appendChild(popup_btn);
+
+        if (valid) {
+            const popup_btn_valid = document.createElement("button");
+            popup_btn_valid.textContent = "Validez";
+            popup_btn.appendChild(popup_btn_valid);
+            popup_btn_valid.addEventListener("click", () => {
+                popup_notif.style.transform = "scale(10%)";
+                setTimeout(() => {
+                    popup_notif.remove();
+                }, 100);
+                resolve(true); // Résout la promesse avec `true`
+            });
+        }
+
+        if (annul) {
+            const popup_btn_annul = document.createElement("button");
+            popup_btn_annul.textContent = "Annulez";
+            popup_btn.appendChild(popup_btn_annul);
+            popup_btn_annul.addEventListener("click", () => {
+                popup_notif.style.transform = "scale(10%)";
+                setTimeout(() => {
+                    popup_notif.remove();
+                }, 100);
+                resolve(false); // Résout la promesse avec `false`
+            });
+        }
+    });
+}
+
 
