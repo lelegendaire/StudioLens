@@ -93,7 +93,10 @@ form.addEventListener('click', (event) => {
 
             if (uploadedFiles.length > 0) {
                 let uploadedFile = uploadedFiles[0]; // Il n'y a qu'un seul fichier dans le localStorage
-                popup_notif_create("Vous avez déjà importé un fichier", "oui")
+                setTimeout(() => {
+
+                    popup_notif_create("Vous avez déjà importé un fichier", "oui")
+                }, 100)
             } else if (linkImg.value) {
                 popup_notif_create("Vous avez déjà importé un fichier par le lien", "oui")
             } else {
@@ -102,113 +105,113 @@ form.addEventListener('click', (event) => {
             }
         }
     });
-    });
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, (e) => e.preventDefault());
-        dropZone.addEventListener(eventName, (e) => e.stopPropagation());
-    });
-    // Gestion du drag and drop
-    dropZone.addEventListener('dragover', (e) => {
+});
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropZone.addEventListener(eventName, (e) => e.preventDefault());
+    dropZone.addEventListener(eventName, (e) => e.stopPropagation());
+});
+// Gestion du drag and drop
+dropZone.addEventListener('dragover', (e) => {
 
-        dropZone.classList.add('dragover'); // Ajoute une classe lorsqu'on survole la zone
-    });
+    dropZone.classList.add('dragover'); // Ajoute une classe lorsqu'on survole la zone
+});
 
-    dropZone.addEventListener('dragleave', () => {
-        dropZone.classList.remove('dragover'); // Retire la classe quand on quitte la zone
-    });
+dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('dragover'); // Retire la classe quand on quitte la zone
+});
 
-    dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('dragover'); // Retire la classe lorsque le fichier est déposé
+dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover'); // Retire la classe lorsque le fichier est déposé
 
-        const files = e.dataTransfer.files; // Récupère le fichier déposé
-        if (files.length) {
-            fileInput.files = files; // Associe le fichier au file input
-            console.log(files[0].name); // Log the name of the dropped file
-            let fileName = files[0].name;
-            if (fileName.length >= 12) {
-                let splitName = fileName.split('.');
-                fileName = splitName[0].substring(0, 13) + '... .' + splitName[1];
-            } else {
-                let splitName = fileName.split('.');
-                fileName = splitName[0] + '...' + splitName[1];
-            }
-
-            uploadFile(fileName, files[0]);
-            // Vous pouvez ici ajouter du code pour traiter ou afficher le fichier sélectionné
+    const files = e.dataTransfer.files; // Récupère le fichier déposé
+    if (files.length) {
+        fileInput.files = files; // Associe le fichier au file input
+        console.log(files[0].name); // Log the name of the dropped file
+        let fileName = files[0].name;
+        if (fileName.length >= 12) {
+            let splitName = fileName.split('.');
+            fileName = splitName[0].substring(0, 13) + '... .' + splitName[1];
+        } else {
+            let splitName = fileName.split('.');
+            fileName = splitName[0] + '...' + splitName[1];
         }
-    });
-    const imageDisplay = document.getElementById("image_display");
 
-    // Ajoutez un événement pour détecter les changements de l'input
-    linkImg.addEventListener("keydown", function (event) {
-        // Vérifier si l'utilisateur est dans l'input et appuie sur la touche "Entrée"
-        if (event.key === "Enter" && document.activeElement === linkImg) {
-            let uploadedFiles = JSON.parse(localStorage.getItem("uploadedFiles")) || [];
+        uploadFile(fileName, files[0]);
+        // Vous pouvez ici ajouter du code pour traiter ou afficher le fichier sélectionné
+    }
+});
+const imageDisplay = document.getElementById("image_display");
 
-            if (uploadedFiles.length > 0) {
-                // Si un fichier est déjà téléchargé, afficher une alerte et réinitialiser l'entrée
-                alert("Vous devez supprimer votre fichier téléchargé");
-                linkImg.value = "";
-            } else {
-                const imageUrl = linkImg.value;
+// Ajoutez un événement pour détecter les changements de l'input
+linkImg.addEventListener("keydown", function (event) {
+    // Vérifier si l'utilisateur est dans l'input et appuie sur la touche "Entrée"
+    if (event.key === "Enter" && document.activeElement === linkImg) {
+        let uploadedFiles = JSON.parse(localStorage.getItem("uploadedFiles")) || [];
 
-                if (imageUrl) {
-                    // Si un lien d'image est fourni, l'afficher et l'ajouter à localStorage
-                    imageDisplay.src = imageUrl;
-                    imageDisplay.style.display = "block"; // Affiche l'image si un lien est présent
-                    const match = imageUrl.match(/\/([^\/]+\.(jpg|jpeg|png))$/i);
-                    const name_all = match ? match[1] : null;
-                    let name = name_all
-                    if (name_all.length >= 12) {
-                        let splitName = name_all.split('.');
-                        name = splitName[0].substring(0, 13) + '... .' + splitName[1];
-                    }
-                    uploadedFiles.push({ name, size: 0, ref: imageUrl, type: "link" });
-                    localStorage.setItem("uploadedFiles", JSON.stringify(uploadedFiles));
-                } else {
-                    // Cache l'image si aucun lien n'est présent
-                    imageDisplay.style.display = "none";
+        if (uploadedFiles.length > 0) {
+            // Si un fichier est déjà téléchargé, afficher une alerte et réinitialiser l'entrée
+            alert("Vous devez supprimer votre fichier téléchargé");
+            linkImg.value = "";
+        } else {
+            const imageUrl = linkImg.value;
+
+            if (imageUrl) {
+                // Si un lien d'image est fourni, l'afficher et l'ajouter à localStorage
+                imageDisplay.src = imageUrl;
+                imageDisplay.style.display = "block"; // Affiche l'image si un lien est présent
+                const match = imageUrl.match(/\/([^\/]+\.(jpg|jpeg|png))$/i);
+                const name_all = match ? match[1] : null;
+                let name = name_all
+                if (name_all.length >= 12) {
+                    let splitName = name_all.split('.');
+                    name = splitName[0].substring(0, 13) + '... .' + splitName[1];
                 }
-            }
-        }
-    });
-    linkImg.addEventListener("input", function () {
-        let uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || [];
-
-        if (uploadedFiles.length > 0) {
-            let uploadedFile = uploadedFiles[0]; // Il n'y a qu'un seul fichier dans le localStorage
-            alert("Vous devez supprimer votre fichier télécharger")
-            linkImg.value = ""
-        }
-    })
-
-    // Optionnel : masquer l'image au départ si aucun lien n'est entré
-    fileInput.onchange = ({ target }) => {
-        let file = target.files[0];
-        if (file) {
-            let fileName = file.name;
-            if (fileName.length >= 12) {
-                let splitName = fileName.split('.');
-                fileName = splitName[0].substring(0, 13) + '... .' + splitName[1];
+                uploadedFiles.push({ name, size: 0, ref: imageUrl, type: "link" });
+                localStorage.setItem("uploadedFiles", JSON.stringify(uploadedFiles));
             } else {
-                let splitName = fileName.split('.');
-                fileName = splitName[0] + '...' + splitName[1];
+                // Cache l'image si aucun lien n'est présent
+                imageDisplay.style.display = "none";
             }
-
-            uploadFile(fileName, file);
         }
-    };
+    }
+});
+linkImg.addEventListener("input", function () {
+    let uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || [];
 
-    function displayUploadedFile() {
-        let uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || [];
+    if (uploadedFiles.length > 0) {
+        let uploadedFile = uploadedFiles[0]; // Il n'y a qu'un seul fichier dans le localStorage
+        alert("Vous devez supprimer votre fichier télécharger")
+        linkImg.value = ""
+    }
+})
 
-        if (uploadedFiles.length > 0) {
-            let uploadedFile = uploadedFiles[0]; // Il n'y a qu'un seul fichier dans le localStorage
+// Optionnel : masquer l'image au départ si aucun lien n'est entré
+fileInput.onchange = ({ target }) => {
+    let file = target.files[0];
+    if (file) {
+        let fileName = file.name;
+        if (fileName.length >= 12) {
+            let splitName = fileName.split('.');
+            fileName = splitName[0].substring(0, 13) + '... .' + splitName[1];
+        } else {
+            let splitName = fileName.split('.');
+            fileName = splitName[0] + '...' + splitName[1];
+        }
 
-            let fileSize = (uploadedFile.size / (1024 * 1024)).toFixed(2) + ' MB';
-            if (uploadedFile.type === "link") {
-                let uploadedHTML = `<li class="row">
+        uploadFile(fileName, file);
+    }
+};
+
+function displayUploadedFile() {
+    let uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || [];
+
+    if (uploadedFiles.length > 0) {
+        let uploadedFile = uploadedFiles[0]; // Il n'y a qu'un seul fichier dans le localStorage
+
+        let fileSize = (uploadedFile.size / (1024 * 1024)).toFixed(2) + ' MB';
+        if (uploadedFile.type === "link") {
+            let uploadedHTML = `<li class="row">
     <div class="content upload">
         <i class='bx bx-link'></i>
         <div class="details">
@@ -223,9 +226,9 @@ form.addEventListener('click', (event) => {
 </div>
 </li>
 <div class="separator2"></div>`;
-                uploadedArea.innerHTML = uploadedHTML;
-            } else {
-                let uploadedHTML = `<li class="row">
+            uploadedArea.innerHTML = uploadedHTML;
+        } else {
+            let uploadedHTML = `<li class="row">
                                 <div class="content upload">
                                     <i class='bx bx-file'></i>
                                     <div class="details">
@@ -240,20 +243,20 @@ form.addEventListener('click', (event) => {
                 </div>
                             </li>
                             <div class="separator2"></div>`;
-                uploadedArea.innerHTML = uploadedHTML;
-            }
-
-
-
+            uploadedArea.innerHTML = uploadedHTML;
         }
-        delete_file()
+
+
+
     }
+    delete_file()
+}
 
-    // Appel de la fonction au chargement de la page
+// Appel de la fonction au chargement de la page
 
-    function uploadFile(name, file) {
-        let fileSize = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
-        let progressHTML = `<li class="row">
+function uploadFile(name, file) {
+    let fileSize = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+    let progressHTML = `<li class="row">
                        
                             <div class="content">     
                             <i class='bx bx-file'></i>
@@ -271,25 +274,25 @@ form.addEventListener('click', (event) => {
                         </li>
                         <div class="separator2"></div>`;
 
-        uploadedArea.classList.add('onprogress');
-        progressArea.innerHTML = progressHTML;
+    uploadedArea.classList.add('onprogress');
+    progressArea.innerHTML = progressHTML;
 
-        let loaded = 0;
-        let total = file.size;
-        let progressInterval = setInterval(() => {
-            loaded += 50000; // Simulating file upload progress
-            let fileLoaded = Math.floor((loaded / total) * 100);
+    let loaded = 0;
+    let total = file.size;
+    let progressInterval = setInterval(() => {
+        loaded += 50000; // Simulating file upload progress
+        let fileLoaded = Math.floor((loaded / total) * 100);
 
-            let progress = progressArea.querySelector('.progress');
-            let percent = progressArea.querySelector('.percent');
-            progress.style.width = `${fileLoaded}%`;
-            percent.innerText = `${fileLoaded}%`;
+        let progress = progressArea.querySelector('.progress');
+        let percent = progressArea.querySelector('.percent');
+        progress.style.width = `${fileLoaded}%`;
+        percent.innerText = `${fileLoaded}%`;
 
-            if (loaded >= total) {
-                clearInterval(progressInterval);
-                progressArea.innerHTML = '';
+        if (loaded >= total) {
+            clearInterval(progressInterval);
+            progressArea.innerHTML = '';
 
-                let uploadedHTML = `<li class="row">
+            let uploadedHTML = `<li class="row">
                 <div class="content upload">
                     <i class='bx bx-file'></i>
                     <div class="details">
@@ -305,135 +308,135 @@ form.addEventListener('click', (event) => {
             </li>
             <div class="separator2"></div>`;
 
-                uploadedArea.classList.remove('onprogress');
-                uploadedArea.insertAdjacentHTML('afterbegin', uploadedHTML);
+            uploadedArea.classList.remove('onprogress');
+            uploadedArea.insertAdjacentHTML('afterbegin', uploadedHTML);
 
-                // Vérifie s'il y a déjà un fichier stocké
-                let uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || [];
+            // Vérifie s'il y a déjà un fichier stocké
+            let uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || [];
 
-                if (uploadedFiles.length >= 1) {
-                    alert("Vous avez déjà téléchargé un fichier. Supprimez-le pour en télécharger un autre.");
-                    return;
-                }
-
-                var reader = new FileReader();
-                reader.addEventListener("load", function () {
-                    const photoUrl = reader.result;
-
-                    // Ajoute le fichier si la limite de 1 fichier n'est pas dépassée
-                    uploadedFiles.push({ name, size: file.size, ref: photoUrl });
-                    localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
-                });
-
-                // Lire le fichier en tant que Data URL
-                reader.readAsDataURL(file);
-
-                // Attache l'événement de suppression au bouton de suppression créé
-                const deleteButton = uploadedArea.querySelector('.delete-btn');
-                deleteButton.addEventListener('click', function () {
-                    if (confirm("Êtes-vous sûr de vouloir supprimer ce fichier ?")) {
-                        // Supprime le fichier du stockage local
-                        uploadedFiles = uploadedFiles.filter(f => f.name !== name);
-                        localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
-
-                        // Supprime le nœud HTML
-                        deleteButton.closest('.row').remove();
-                        document.querySelector(".separator2").remove()
-                    }
-                });
-            }
-        }, 250); // Met à jour la progression toutes les 250 millisecondes
-    }
-
-    function delete_file() {
-        const deleteButtons = document.querySelectorAll('.delete-btn');
-        console.log(deleteButtons)
-        deleteButtons.forEach(function (button) {
-            button.addEventListener('click', function (event) {
-
-                popup_notif_create("Êtes-vous sûr de vouloir supprimer ce fichier ?", true, true).then((confirmation) => {
-                    if (confirmation) {
-                        const parentContent = event.target.closest('.content');
-                        const fileNameElement = document.querySelector(".uploaded-area .name");
-                        const fileName = fileNameElement.textContent.split(' • ')[0];
-
-                        let uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || [];
-
-                        console.log("Avant la suppression : ", uploadedFiles);
-
-                        // Filtrer les fichiers pour exclure celui à supprimer
-                        uploadedFiles = uploadedFiles.filter(function (file) {
-                            console.log("Comparaison : ", file.name, " avec ", fileName);
-                            return file.name !== fileName;
-                        });
-
-                        console.log("Après la suppression : ", uploadedFiles);
-
-                        // Mettez à jour la liste des fichiers dans localStorage
-                        localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
-
-                        // Supprimez le nœud HTML correspondant
-                        document.querySelector(".uploaded-area .row").remove();
-                        document.querySelector(".separator2").remove()
-
-                    }
-                });
-            });
-        });
-    }
-    function popup_notif_create(text_popup, valid, annul) {
-        return new Promise((resolve, reject) => {
-            const existingPopup = document.querySelector(".popup_notif");
-            if (existingPopup) {
-                existingPopup.classList.add("shake");
-                setTimeout(() => {
-                    existingPopup.classList.remove("shake");
-                }, 200);
+            if (uploadedFiles.length >= 1) {
+                alert("Vous avez déjà téléchargé un fichier. Supprimez-le pour en télécharger un autre.");
                 return;
             }
 
-            const popup_notif = document.createElement("div");
-            popup_notif.classList.add("popup_notif");
-            setTimeout(() => {
-                popup_notif.style.transform = "scale(100%)";
-            }, 10);
+            var reader = new FileReader();
+            reader.addEventListener("load", function () {
+                const photoUrl = reader.result;
 
-            document.body.appendChild(popup_notif);
+                // Ajoute le fichier si la limite de 1 fichier n'est pas dépassée
+                uploadedFiles.push({ name, size: file.size, ref: photoUrl });
+                localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
+            });
 
-            const popup_text = document.createElement("h4");
-            popup_text.textContent = text_popup;
-            popup_notif.appendChild(popup_text);
+            // Lire le fichier en tant que Data URL
+            reader.readAsDataURL(file);
 
-            const popup_btn = document.createElement("div");
-            popup_btn.classList.add("popup_notif_btn");
-            popup_notif.appendChild(popup_btn);
+            // Attache l'événement de suppression au bouton de suppression créé
+            const deleteButton = uploadedArea.querySelector('.delete-btn');
+            deleteButton.addEventListener('click', function () {
+                if (confirm("Êtes-vous sûr de vouloir supprimer ce fichier ?")) {
+                    // Supprime le fichier du stockage local
+                    uploadedFiles = uploadedFiles.filter(f => f.name !== name);
+                    localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
 
-            if (valid) {
-                const popup_btn_valid = document.createElement("button");
-                popup_btn_valid.textContent = "Validez";
-                popup_btn.appendChild(popup_btn_valid);
-                popup_btn_valid.addEventListener("click", () => {
-                    popup_notif.style.transform = "scale(10%)";
-                    setTimeout(() => {
-                        popup_notif.remove();
-                    }, 100);
-                    resolve(true); // Résout la promesse avec `true`
-                });
-            }
+                    // Supprime le nœud HTML
+                    deleteButton.closest('.row').remove();
+                    document.querySelector(".separator2").remove()
+                }
+            });
+        }
+    }, 250); // Met à jour la progression toutes les 250 millisecondes
+}
 
-            if (annul) {
-                const popup_btn_annul = document.createElement("button");
-                popup_btn_annul.textContent = "Annulez";
-                popup_btn.appendChild(popup_btn_annul);
-                popup_btn_annul.addEventListener("click", () => {
-                    popup_notif.style.transform = "scale(10%)";
-                    setTimeout(() => {
-                        popup_notif.remove();
-                    }, 100);
-                    resolve(false); // Résout la promesse avec `false`
-                });
-            }
+function delete_file() {
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+    console.log(deleteButtons)
+    deleteButtons.forEach(function (button) {
+        button.addEventListener('click', function (event) {
+
+            popup_notif_create("Êtes-vous sûr de vouloir supprimer ce fichier ?", true, true).then((confirmation) => {
+                if (confirmation) {
+                    const parentContent = event.target.closest('.content');
+                    const fileNameElement = document.querySelector(".uploaded-area .name");
+                    const fileName = fileNameElement.textContent.split(' • ')[0];
+
+                    let uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || [];
+
+                    console.log("Avant la suppression : ", uploadedFiles);
+
+                    // Filtrer les fichiers pour exclure celui à supprimer
+                    uploadedFiles = uploadedFiles.filter(function (file) {
+                        console.log("Comparaison : ", file.name, " avec ", fileName);
+                        return file.name !== fileName;
+                    });
+
+                    console.log("Après la suppression : ", uploadedFiles);
+
+                    // Mettez à jour la liste des fichiers dans localStorage
+                    localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
+
+                    // Supprimez le nœud HTML correspondant
+                    document.querySelector(".uploaded-area .row").remove();
+                    document.querySelector(".separator2").remove()
+
+                }
+            });
         });
-    }
+    });
+}
+function popup_notif_create(text_popup, valid, annul) {
+    return new Promise((resolve, reject) => {
+        const existingPopup = document.querySelector(".popup_notif");
+        if (existingPopup) {
+            existingPopup.classList.add("shake");
+            setTimeout(() => {
+                existingPopup.classList.remove("shake");
+            }, 200);
+            return;
+        }
+
+        const popup_notif = document.createElement("div");
+        popup_notif.classList.add("popup_notif");
+        setTimeout(() => {
+            popup_notif.style.transform = "scale(100%)";
+        }, 10);
+
+        document.body.appendChild(popup_notif);
+
+        const popup_text = document.createElement("h4");
+        popup_text.textContent = text_popup;
+        popup_notif.appendChild(popup_text);
+
+        const popup_btn = document.createElement("div");
+        popup_btn.classList.add("popup_notif_btn");
+        popup_notif.appendChild(popup_btn);
+
+        if (valid) {
+            const popup_btn_valid = document.createElement("button");
+            popup_btn_valid.textContent = "Validez";
+            popup_btn.appendChild(popup_btn_valid);
+            popup_btn_valid.addEventListener("click", () => {
+                popup_notif.style.transform = "scale(10%)";
+                setTimeout(() => {
+                    popup_notif.remove();
+                }, 100);
+                resolve(true); // Résout la promesse avec `true`
+            });
+        }
+
+        if (annul) {
+            const popup_btn_annul = document.createElement("button");
+            popup_btn_annul.textContent = "Annulez";
+            popup_btn.appendChild(popup_btn_annul);
+            popup_btn_annul.addEventListener("click", () => {
+                popup_notif.style.transform = "scale(10%)";
+                setTimeout(() => {
+                    popup_notif.remove();
+                }, 100);
+                resolve(false); // Résout la promesse avec `false`
+            });
+        }
+    });
+}
 
 
