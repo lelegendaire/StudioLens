@@ -102,6 +102,7 @@ form.addEventListener('click', (event) => {
             }
         }
     });
+    });
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
         dropZone.addEventListener(eventName, (e) => e.preventDefault());
         dropZone.addEventListener(eventName, (e) => e.stopPropagation());
