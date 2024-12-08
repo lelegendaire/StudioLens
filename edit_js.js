@@ -858,6 +858,7 @@ function Img_to_filter_img(image_pour_filtre) {
       image_preview.style.height = scaledHeight + "px";
       drag_line.style.height = scaledHeight + "px";
       const track = document.getElementById("image-track");
+      const scrolimg = document.querySelector(".scroll_image");
 
       // Fonction pour gérer les événements de départ (mousedown / touchstart)
       const handleStart = (e) => {
@@ -908,14 +909,14 @@ function Img_to_filter_img(image_pour_filtre) {
       };
 
       // Écouteurs pour les événements de souris
-      window.addEventListener("mousedown", handleStart);
-      window.addEventListener("mouseup", handleEnd);
-      window.addEventListener("mousemove", handleMove);
+      scrolimg.addEventListener("mousedown", handleStart);
+      scrolimg.addEventListener("mouseup", handleEnd);
+      scrolimg.addEventListener("mousemove", handleMove);
 
       // Écouteurs pour les événements tactiles
-      window.addEventListener("touchstart", handleStart);
-      window.addEventListener("touchend", handleEnd);
-      window.addEventListener("touchmove", handleMove);
+      scrolimg.addEventListener("touchstart", handleStart);
+      scrolimg.addEventListener("touchend", handleEnd);
+      scrolimg.addEventListener("touchmove", handleMove);
     } else {
       // Sinon, garder les dimensions naturelles
       image_preview.style.width = naturalWidth + "px";
