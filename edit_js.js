@@ -858,7 +858,7 @@ function Img_to_filter_img(image_pour_filtre) {
       image_preview.style.height = scaledHeight + "px";
       drag_line.style.height = scaledHeight + "px";
       const track = document.getElementById("image-track");
-      const scrolimg = document.querySelector(".scroll_image");
+      const scrolimg = document.querySelector(".scroll_img");
 
       // Fonction pour gérer les événements de départ (mousedown / touchstart)
       const handleStart = (e) => {
