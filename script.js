@@ -256,7 +256,7 @@ function displayUploadedFile() {
 
     }
     delete_file()
-    supprimerFichier()
+
 }
 
 // Appel de la fonction au chargement de la page
@@ -341,15 +341,18 @@ function uploadFile(name, file) {
             // Attache l'événement de suppression au bouton de suppression créé
             const deleteButton = uploadedArea.querySelector('.delete-btn');
             deleteButton.addEventListener('click', function () {
-                if (confirm("Êtes-vous sûr de vouloir supprimer ce fichier ?")) {
-                    // Supprime le fichier du stockage local
-                    uploadedFiles = uploadedFiles.filter(f => f.name !== name);
-                    localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
+                popup_notif_create("Êtes-vous sûr de vouloir supprimer ce fichier ?", true, true).then((confirmation) => {
+                    if (confirmation) {
+                        supprimerFichier()
+                        // Supprime le fichier du stockage local
+                        uploadedFiles = uploadedFiles.filter(f => f.name !== name);
+                        localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
 
-                    // Supprime le nœud HTML
-                    deleteButton.closest('.row').remove();
-                    document.querySelector(".separator2").remove()
-                }
+                        // Supprime le nœud HTML
+                        deleteButton.closest('.row').remove();
+                        document.querySelector(".separator2").remove()
+                    }
+                })
             });
         }
     }, 250); // Met à jour la progression toutes les 250 millisecondes
@@ -382,6 +385,7 @@ function delete_file() {
 
             popup_notif_create("Êtes-vous sûr de vouloir supprimer ce fichier ?", true, true).then((confirmation) => {
                 if (confirmation) {
+                    supprimerFichier()
                     const parentContent = event.target.closest('.content');
                     const fileNameElement = document.querySelector(".uploaded-area .name");
                     const fileName = fileNameElement.textContent.split(' • ')[0];
@@ -412,15 +416,20 @@ function delete_file() {
 }
 function supprimerFichier() {
     const historique = JSON.parse(localStorage.getItem('historiqueFichiers'));
-    const fileNameElement = document.querySelector(".uploaded-area .name");
-    const fileName = fileNameElement.textContent.split(' • ')[0];
-
-
-    const index = historique.findIndex(f => f.nom === fileName && !f.isDeleted);
+    let uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || [];
+    if (uploadedFiles.length > 0) {
+        let uploadedFile = uploadedFiles[0]; // Il n'y a qu'un seul fichier dans le localStorage
+        console.log(uploadedFile.size)
+    }
+    console.log(historique[0].taille)
+    const index = historique.findIndex(f => f.taille === uploadedFiles[0].size && !f.isDeleted);
     if (index !== -1) {
+        console.log(index)
         historique[index].isDeleted = true; // Marque comme supprimé
         historique[index].dateSuppression = new Date().toISOString(); // Ajoute la date de suppression
         localStorage.setItem('historiqueFichiers', JSON.stringify(historique));
+    } else {
+        console.log(index)
     }
 }
 function popup_notif_create(text_popup, valid, annul) {
