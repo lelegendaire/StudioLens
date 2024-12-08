@@ -179,6 +179,10 @@ body {
   align-items: center;
   justify-content: center;
 }
+.scroll_img {
+  width: 30%;
+}
+
 .nb_img_generer .image {
   width: 150px;
   height: 120px;
@@ -193,7 +197,6 @@ body {
   justify-content: center;
   align-items: center;
   gap: 3vh;
-  margin-right: 100%;
 }
 .preview_right {
   position: relative;
@@ -315,6 +318,26 @@ body {
 .bar_tool .refresh i,
 .bar_tool .cog i {
   transition: all 0.3s ease-in-out;
+}
+.bar_tool .magic i:hover {
+  color: rgb(255, 255, 255);
+  animation: shake_magic 0.5s ease-in;
+}
+
+@keyframes shake_magic {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  10%,
+  50%,
+  90% {
+    transform: rotate(-10deg);
+  }
+  20%,
+  80% {
+    transform: rotate(10deg);
+  }
 }
 .bar_tool .download i:hover {
   color: rgb(255, 255, 255);
@@ -746,4 +769,50 @@ body {
   .popup_notif {
     width: 95vw;
   }
+}
+.file_picture {
+  display: flex;
+  border-radius: 1rem;
+  padding: 10px;
+  border: 2px solid white;
+  align-items: center;
+  margin: 10px;
+  background: #161515;
+  box-shadow: inset 0px 0px 19px 0px black;
+}
+.file_picture_img {
+  width: 50px;
+  height: 50px;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+.file_picture_info {
+  margin-left: 10px;
+  color: white;
+}
+.file_picture_info p:nth-child(2) {
+  color: grey;
+  font-size: 12px;
+}
+.file_picture_info p:nth-child(3) {
+  color: rgb(54, 54, 54);
+  font-size: 10px;
+}
+.file_picture_statut {
+  margin-left: auto;
+  font-size: 20px;
+  color: green;
+}
+.file_picture_reload {
+  color: white;
+  display: flex;
+  align-items: center;
+}
+.file_picture_reload::before {
+  content: "";
+  height: 30px;
+  width: 3px;
+  margin: 0px 10px;
+  border-radius: 100px;
+  background-color: #80808087;
 }
