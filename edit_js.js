@@ -147,10 +147,11 @@ profile.addEventListener("click", function () {
       const file_picture_statut_i = document.createElement("i")
       const statut = fichier.isDeleted ? 'Supprimé' : 'Uploadé';
       const dateSuppression = fichier.isDeleted ? ` (Supprimé le : ${new Date(fichier.dateSuppression).toLocaleString()})` : '';
-
-      if (statut === "Suprimé") {
+      console.log(statut)
+      if (statut === "Supprimé") {
 
         file_picture_statut_i.classList.add("bx", "bx-x-circle")
+        file_picture_statut_i.style.color = "red"
         const file_picture_date = document.createElement("p")
         file_picture_date.textContent = dateSuppression
 
@@ -623,214 +624,10 @@ function Img_to_filter_img(image_pour_filtre) {
 
   beforeImg.style.backgroundImage = "url(" + image_pour_filtre + ")  ";
 
-  function displayFilteredImage(img, filters) {
-    img.crossOrigin = "Anonymous";
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    canvas.width = img.width;
-    canvas.height = img.height;
-    ctx.drawImage(img, 0, 0, img.width, img.height);
 
-    // Obtenir les données RAW de l'image
-    const rawData = ctx.getImageData(
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    ).data;
 
-    // Appliquer les filtres
-    const filteredData = applyAllFilters(
-      rawData,
-      canvas.width,
-      canvas.height,
-      filters
-    );
-
-    // Mettre à jour le canvas avec les nouvelles données
-    const imageData = new ImageData(
-      filteredData,
-      canvas.width,
-      canvas.height
-    );
-    ctx.putImageData(imageData, 0, 0);
-
-    return canvas.toDataURL();
-  }
-  function applyAllFilters(rawData, width, height, filters) {
-    let imageData = new Uint8ClampedArray(rawData); // Commence avec les données RAW
-
-    // Appliquer les filtres selon les paramètres fournis
-    if (
-      filters.exposition !== undefined &&
-      filters.contraste !== undefined
-    ) {
-      imageData = applyExposureContrast(
-        imageData,
-        width,
-        height,
-        filters.exposition,
-        filters.contraste
-      );
-    }
-    if (filters.temperature !== undefined) {
-      imageData = applyTemperature(imageData, filters.temperature);
-    }
-    if (filters.teinte !== undefined) {
-      imageData = applyTint(imageData, filters.teinte);
-    }
-    if (filters.saturation !== undefined) {
-      imageData = applySaturation(imageData, filters.saturation);
-    }
-    if (filters.vibrance !== undefined) {
-      imageData = applyVibrance(imageData, filters.vibrance);
-    }
-
-    return imageData;
-  }
   // Fonction pour appliquer l'exposition et le contraste
-  function applyExposureContrast(data, width, height, exposure, contrast) {
-    const newData = new Uint8ClampedArray(data); // Copie pour non-destructivité
-    for (let i = 0; i < newData.length; i += 4) {
-      newData[i] = newData[i] * (1 + exposure / 5) + contrast;
-      newData[i + 1] = newData[i + 1] * (1 + exposure / 5) + contrast;
-      newData[i + 2] = newData[i + 2] * (1 + exposure / 5) + contrast;
-    }
-    return newData;
-  }
 
-  // Fonction pour appliquer la température de couleur
-  function applyTemperature(data, temperature) {
-    const newData = new Uint8ClampedArray(data);
-    for (let i = 0; i < newData.length; i += 4) {
-      newData[i] += temperature; // Rouge
-      newData[i + 2] -= temperature; // Bleu
-    }
-    return newData;
-  }
-
-  // Fonction pour appliquer la teinte
-  function applyTint(data, tint) {
-    const newData = new Uint8ClampedArray(data);
-    for (let i = 0; i < newData.length; i += 4) {
-      let avg = (newData[i] + newData[i + 1] + newData[i + 2]) / 3;
-      newData[i] += (avg - newData[i]) * (tint / 100);
-      newData[i + 1] += (avg - newData[i + 1]) * (tint / 100);
-      newData[i + 2] += (avg - newData[i + 2]) * (tint / 100);
-    }
-    return newData;
-  }
-
-  // Fonction pour appliquer la saturation
-  function applySaturation(data, saturation) {
-    const newData = new Uint8ClampedArray(data);
-    for (let i = 0; i < newData.length; i += 4) {
-      let lum =
-        0.3 * newData[i] + 0.59 * newData[i + 1] + 0.11 * newData[i + 2];
-      newData[i] = lum + (newData[i] - lum) * (1 + saturation / 100);
-      newData[i + 1] =
-        lum + (newData[i + 1] - lum) * (1 + saturation / 100);
-      newData[i + 2] =
-        lum + (newData[i + 2] - lum) * (1 + saturation / 100);
-    }
-    return newData;
-  }
-
-  // Fonction pour appliquer la vibrance
-  function applyVibrance(data, vibrance) {
-    const newData = new Uint8ClampedArray(data);
-    for (let i = 0; i < newData.length; i += 4) {
-      let maxColor = Math.max(newData[i], newData[i + 1], newData[i + 2]);
-      let vibranceFactor = 1 + vibrance / 100;
-      if (maxColor < 128) {
-        newData[i] *= vibranceFactor;
-        newData[i + 1] *= vibranceFactor;
-        newData[i + 2] *= vibranceFactor;
-      }
-    }
-    return newData;
-  }
-  function createRawImageData(img) {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    canvas.width = img.width;
-    canvas.height = img.height;
-    ctx.drawImage(img, 0, 0, img.width, img.height);
-    return ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-  }
-
-  function applyFilters(img, variable) {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    canvas.width = img.width;
-    canvas.height = img.height;
-    ctx.drawImage(img, 0, 0, img.width, img.height);
-
-    // Obtenez les données de l'image
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imageData.data;
-
-    let exposition = variable.exposition;
-    let contraste = variable.contraste;
-    let hautesLumieres = variable.hautesLumieres;
-    let ombres = variable.ombres;
-    let blancs = variable.blancs;
-    let noirs = variable.noirs;
-    let temperature = variable.temperature;
-    let teinte = variable.teinte;
-    let vibrance = variable.vibrance;
-    let saturation = variable.saturation;
-
-    // Applique les filtres de lumière et de couleur
-    for (let i = 0; i < data.length; i += 4) {
-      // Luminosité et contraste
-      data[i] = data[i] * (1 + exposition / 5) + contraste;
-      data[i + 1] = data[i + 1] * (1 + exposition / 5) + contraste;
-      data[i + 2] = data[i + 2] * (1 + exposition / 5) + contraste;
-
-      // Température
-      data[i] += temperature;
-      data[i + 2] -= temperature;
-
-      // Luminosité et contraste
-      data[i] = data[i] * (1 + exposition / 5) + contraste;
-      data[i + 1] = data[i + 1] * (1 + exposition / 5) + contraste;
-      data[i + 2] = data[i + 2] * (1 + exposition / 5) + contraste;
-
-      // Température
-      data[i] += temperature; // Modifie la valeur du rouge (augmentation ou diminution)
-      data[i + 2] -= temperature; // Modifie la valeur du bleu (augmentation ou diminution)
-
-      // Teinte (rotation de la couleur)
-      let avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-      data[i] += (avg - data[i]) * (teinte / 100);
-      data[i + 1] += (avg - data[i + 1]) * (teinte / 100);
-      data[i + 2] += (avg - data[i + 2]) * (teinte / 100);
-
-      // Saturation
-      let lum = 0.3 * data[i] + 0.59 * data[i + 1] + 0.11 * data[i + 2];
-      data[i] = lum + (data[i] - lum) * (1 + saturation / 100);
-      data[i + 1] = lum + (data[i + 1] - lum) * (1 + saturation / 100);
-      data[i + 2] = lum + (data[i + 2] - lum) * (1 + saturation / 100);
-
-      // Vibrance (augmentation de la saturation uniquement pour les couleurs sous-saturées)
-      let maxColor = Math.max(data[i], data[i + 1], data[i + 2]);
-      let vibranceFactor = 1 + vibrance / 100;
-      if (maxColor < 128) {
-        data[i] *= vibranceFactor;
-        data[i + 1] *= vibranceFactor;
-        data[i + 2] *= vibranceFactor;
-      }
-
-      // Applique des corrections pour chaque canal de couleur spécifique
-      // Ex. Rouge, Vert, Bleu, etc.
-    }
-
-    // Mettre à jour le canvas avec les nouvelles données d'image
-    ctx.putImageData(imageData, 0, 0);
-
-    return canvas.toDataURL();
-  }
 
   let img = new Image();
   img.src = image_pour_filtre;
@@ -955,6 +752,213 @@ function Img_to_filter_img(image_pour_filtre) {
     //nb_img_generer[5].src = applyFilters(img, variable_couleur_urbain);
     //nb_img_generer[6].src = applyFilters(img, variable_couleur_pastel);
   };
+}
+function applyAllFilters(rawData, width, height, filters) {
+  let imageData = new Uint8ClampedArray(rawData); // Commence avec les données RAW
+
+  // Appliquer les filtres selon les paramètres fournis
+  if (
+    filters.exposition !== undefined &&
+    filters.contraste !== undefined
+  ) {
+    imageData = applyExposureContrast(
+      imageData,
+      width,
+      height,
+      filters.exposition,
+      filters.contraste
+    );
+  }
+  if (filters.temperature !== undefined) {
+    imageData = applyTemperature(imageData, filters.temperature);
+  }
+  if (filters.teinte !== undefined) {
+    imageData = applyTint(imageData, filters.teinte);
+  }
+  if (filters.saturation !== undefined) {
+    imageData = applySaturation(imageData, filters.saturation);
+  }
+  if (filters.vibrance !== undefined) {
+    imageData = applyVibrance(imageData, filters.vibrance);
+  }
+
+  return imageData;
+}
+function applyExposureContrast(data, width, height, exposure, contrast) {
+  const newData = new Uint8ClampedArray(data); // Copie pour non-destructivité
+  for (let i = 0; i < newData.length; i += 4) {
+    newData[i] = newData[i] * (1 + exposure / 5) + contrast;
+    newData[i + 1] = newData[i + 1] * (1 + exposure / 5) + contrast;
+    newData[i + 2] = newData[i + 2] * (1 + exposure / 5) + contrast;
+  }
+  return newData;
+}
+
+// Fonction pour appliquer la température de couleur
+function applyTemperature(data, temperature) {
+  const newData = new Uint8ClampedArray(data);
+  for (let i = 0; i < newData.length; i += 4) {
+    newData[i] += temperature; // Rouge
+    newData[i + 2] -= temperature; // Bleu
+  }
+  return newData;
+}
+
+// Fonction pour appliquer la teinte
+function applyTint(data, tint) {
+  const newData = new Uint8ClampedArray(data);
+  for (let i = 0; i < newData.length; i += 4) {
+    let avg = (newData[i] + newData[i + 1] + newData[i + 2]) / 3;
+    newData[i] += (avg - newData[i]) * (tint / 100);
+    newData[i + 1] += (avg - newData[i + 1]) * (tint / 100);
+    newData[i + 2] += (avg - newData[i + 2]) * (tint / 100);
+  }
+  return newData;
+}
+
+// Fonction pour appliquer la saturation
+function applySaturation(data, saturation) {
+  const newData = new Uint8ClampedArray(data);
+  for (let i = 0; i < newData.length; i += 4) {
+    let lum =
+      0.3 * newData[i] + 0.59 * newData[i + 1] + 0.11 * newData[i + 2];
+    newData[i] = lum + (newData[i] - lum) * (1 + saturation / 100);
+    newData[i + 1] =
+      lum + (newData[i + 1] - lum) * (1 + saturation / 100);
+    newData[i + 2] =
+      lum + (newData[i + 2] - lum) * (1 + saturation / 100);
+  }
+  return newData;
+}
+
+// Fonction pour appliquer la vibrance
+function applyVibrance(data, vibrance) {
+  const newData = new Uint8ClampedArray(data);
+  for (let i = 0; i < newData.length; i += 4) {
+    let maxColor = Math.max(newData[i], newData[i + 1], newData[i + 2]);
+    let vibranceFactor = 1 + vibrance / 100;
+    if (maxColor < 128) {
+      newData[i] *= vibranceFactor;
+      newData[i + 1] *= vibranceFactor;
+      newData[i + 2] *= vibranceFactor;
+    }
+  }
+  return newData;
+}
+function createRawImageData(img) {
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = img.width;
+  canvas.height = img.height;
+  ctx.drawImage(img, 0, 0, img.width, img.height);
+  return ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+}
+
+function applyFilters(img, variable) {
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = img.width;
+  canvas.height = img.height;
+  ctx.drawImage(img, 0, 0, img.width, img.height);
+
+  // Obtenez les données de l'image
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const data = imageData.data;
+
+  let exposition = variable.exposition;
+  let contraste = variable.contraste;
+  let hautesLumieres = variable.hautesLumieres;
+  let ombres = variable.ombres;
+  let blancs = variable.blancs;
+  let noirs = variable.noirs;
+  let temperature = variable.temperature;
+  let teinte = variable.teinte;
+  let vibrance = variable.vibrance;
+  let saturation = variable.saturation;
+
+  // Applique les filtres de lumière et de couleur
+  for (let i = 0; i < data.length; i += 4) {
+    // Luminosité et contraste
+    data[i] = data[i] * (1 + exposition / 5) + contraste;
+    data[i + 1] = data[i + 1] * (1 + exposition / 5) + contraste;
+    data[i + 2] = data[i + 2] * (1 + exposition / 5) + contraste;
+
+    // Température
+    data[i] += temperature;
+    data[i + 2] -= temperature;
+
+    // Luminosité et contraste
+    data[i] = data[i] * (1 + exposition / 5) + contraste;
+    data[i + 1] = data[i + 1] * (1 + exposition / 5) + contraste;
+    data[i + 2] = data[i + 2] * (1 + exposition / 5) + contraste;
+
+    // Température
+    data[i] += temperature; // Modifie la valeur du rouge (augmentation ou diminution)
+    data[i + 2] -= temperature; // Modifie la valeur du bleu (augmentation ou diminution)
+
+    // Teinte (rotation de la couleur)
+    let avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+    data[i] += (avg - data[i]) * (teinte / 100);
+    data[i + 1] += (avg - data[i + 1]) * (teinte / 100);
+    data[i + 2] += (avg - data[i + 2]) * (teinte / 100);
+
+    // Saturation
+    let lum = 0.3 * data[i] + 0.59 * data[i + 1] + 0.11 * data[i + 2];
+    data[i] = lum + (data[i] - lum) * (1 + saturation / 100);
+    data[i + 1] = lum + (data[i + 1] - lum) * (1 + saturation / 100);
+    data[i + 2] = lum + (data[i + 2] - lum) * (1 + saturation / 100);
+
+    // Vibrance (augmentation de la saturation uniquement pour les couleurs sous-saturées)
+    let maxColor = Math.max(data[i], data[i + 1], data[i + 2]);
+    let vibranceFactor = 1 + vibrance / 100;
+    if (maxColor < 128) {
+      data[i] *= vibranceFactor;
+      data[i + 1] *= vibranceFactor;
+      data[i + 2] *= vibranceFactor;
+    }
+
+    // Applique des corrections pour chaque canal de couleur spécifique
+    // Ex. Rouge, Vert, Bleu, etc.
+  }
+
+  // Mettre à jour le canvas avec les nouvelles données d'image
+  ctx.putImageData(imageData, 0, 0);
+
+  return canvas.toDataURL();
+}
+function displayFilteredImage(img, filters) {
+  img.crossOrigin = "Anonymous";
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = img.width;
+  canvas.height = img.height;
+  ctx.drawImage(img, 0, 0, img.width, img.height);
+
+  // Obtenir les données RAW de l'image
+  const rawData = ctx.getImageData(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  ).data;
+
+  // Appliquer les filtres
+  const filteredData = applyAllFilters(
+    rawData,
+    canvas.width,
+    canvas.height,
+    filters
+  );
+
+  // Mettre à jour le canvas avec les nouvelles données
+  const imageData = new ImageData(
+    filteredData,
+    canvas.width,
+    canvas.height
+  );
+  ctx.putImageData(imageData, 0, 0);
+
+  return canvas.toDataURL();
 }
 let uploadedFiles = JSON.parse(localStorage.getItem("uploadedFiles")) || [];
 
