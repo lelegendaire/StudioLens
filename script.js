@@ -1,4 +1,8 @@
 window.onload = displayUploadedFile;
+// Initialisation de l'historique dans le localStorage
+if (!localStorage.getItem('historiqueFichiers')) {
+    localStorage.setItem('historiqueFichiers', JSON.stringify([]));
+}
 const form = document.querySelector(".wrapper form");
 const dropZone = document.querySelector('.drop-zone');
 const fileInput = document.querySelector(".file-input");
@@ -137,6 +141,7 @@ dropZone.addEventListener('drop', (e) => {
             fileName = splitName[0] + '...' + splitName[1];
         }
 
+        ajouterFichierAuHistorique(files[0])
         uploadFile(fileName, files[0]);
         // Vous pouvez ici ajouter du code pour traiter ou afficher le fichier sélectionné
     }
@@ -198,8 +203,9 @@ fileInput.onchange = ({ target }) => {
             let splitName = fileName.split('.');
             fileName = splitName[0] + '...' + splitName[1];
         }
-
+        ajouterFichierAuHistorique(file)
         uploadFile(fileName, file);
+
     }
 };
 
@@ -250,6 +256,7 @@ function displayUploadedFile() {
 
     }
     delete_file()
+    supprimerFichier()
 }
 
 // Appel de la fonction au chargement de la page
@@ -347,7 +354,26 @@ function uploadFile(name, file) {
         }
     }, 250); // Met à jour la progression toutes les 250 millisecondes
 }
+function ajouterFichierAuHistorique(file) {
+    const historique = JSON.parse(localStorage.getItem('historiqueFichiers'));
+    var reader = new FileReader();
+    reader.addEventListener("load", function () {
+        const photoUrl = reader.result;
+        const nouvelElement = {
+            nom: file.name,
+            taille: file.size,
+            date: new Date().toISOString(),
+            ref: photoUrl,
+            isDeleted: false, // Le fichier n'est pas supprimé
+        };
+        // Ajoute le fichier si la limite de 1 fichier n'est pas dépassée
 
+        historique.push(nouvelElement);
+        localStorage.setItem('historiqueFichiers', JSON.stringify(historique));
+    });
+    reader.readAsDataURL(file);
+
+}
 function delete_file() {
     const deleteButtons = document.querySelectorAll('.delete-btn');
     console.log(deleteButtons)
@@ -383,6 +409,18 @@ function delete_file() {
             });
         });
     });
+}
+function supprimerFichier() {
+    const historique = JSON.parse(localStorage.getItem('historiqueFichiers'));
+    let uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || [];
+
+
+    const index = historique.findIndex(f => f.nom === file.name && !f.isDeleted);
+    if (index !== -1) {
+        historique[index].isDeleted = true; // Marque comme supprimé
+        historique[index].dateSuppression = new Date().toISOString(); // Ajoute la date de suppression
+        localStorage.setItem('historiqueFichiers', JSON.stringify(historique));
+    }
 }
 function popup_notif_create(text_popup, valid, annul) {
     return new Promise((resolve, reject) => {
