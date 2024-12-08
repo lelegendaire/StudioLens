@@ -412,10 +412,11 @@ function delete_file() {
 }
 function supprimerFichier() {
     const historique = JSON.parse(localStorage.getItem('historiqueFichiers'));
-    let uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || [];
+    const fileNameElement = document.querySelector(".uploaded-area .name");
+    const fileName = fileNameElement.textContent.split(' • ')[0];
 
 
-    const index = historique.findIndex(f => f.nom === file.name && !f.isDeleted);
+    const index = historique.findIndex(f => f.nom === fileName && !f.isDeleted);
     if (index !== -1) {
         historique[index].isDeleted = true; // Marque comme supprimé
         historique[index].dateSuppression = new Date().toISOString(); // Ajoute la date de suppression
