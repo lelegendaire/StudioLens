@@ -136,9 +136,6 @@ dropZone.addEventListener('drop', (e) => {
         if (fileName.length >= 12) {
             let splitName = fileName.split('.');
             fileName = splitName[0].substring(0, 13) + '... .' + splitName[1];
-        } else {
-            let splitName = fileName.split('.');
-            fileName = splitName[0] + '...' + splitName[1];
         }
 
         ajouterFichierAuHistorique(files[0])
@@ -446,13 +443,14 @@ function popup_notif_create(text_popup, valid, annul) {
         const popup_notif = document.createElement("div");
         popup_notif.classList.add("popup_notif");
         setTimeout(() => {
-            popup_notif.style.transform = "scale(100%)";
+            popup_notif.classList.add("active"); // Animation d'entrée
         }, 10);
 
         document.body.appendChild(popup_notif);
 
         const popup_text = document.createElement("h4");
         popup_text.textContent = text_popup;
+        popup_text.style.textAlign = "center"; // Centrage du texte
         popup_notif.appendChild(popup_text);
 
         const popup_btn = document.createElement("div");
@@ -464,10 +462,10 @@ function popup_notif_create(text_popup, valid, annul) {
             popup_btn_valid.textContent = "Validez";
             popup_btn.appendChild(popup_btn_valid);
             popup_btn_valid.addEventListener("click", () => {
-                popup_notif.style.transform = "scale(10%)";
+                popup_notif.style.transform = "scale(0)"; // Animation de sortie
                 setTimeout(() => {
                     popup_notif.remove();
-                }, 100);
+                }, 300);
                 resolve(true); // Résout la promesse avec `true`
             });
         }
@@ -477,14 +475,13 @@ function popup_notif_create(text_popup, valid, annul) {
             popup_btn_annul.textContent = "Annulez";
             popup_btn.appendChild(popup_btn_annul);
             popup_btn_annul.addEventListener("click", () => {
-                popup_notif.style.transform = "scale(10%)";
+                popup_notif.style.transform = "scale(0)"; // Animation de sortie
                 setTimeout(() => {
                     popup_notif.remove();
-                }, 100);
+                }, 300);
                 resolve(false); // Résout la promesse avec `false`
             });
         }
     });
 }
-
 
