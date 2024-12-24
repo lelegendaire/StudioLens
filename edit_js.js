@@ -107,12 +107,11 @@ profile.addEventListener("click", function () {
     const settingsCard = document.createElement("div");
     settingsCard.classList.add("settings-card");
     setTimeout(() => {
-      wrapper_cog.style.transform = "scale(100%) translateY(0%)";
+      wrapper_cog.style.transform = "scale(1)";
     }, 50);
 
     const header = document.createElement("div");
     header.classList.add("header-settings-card");
-    // Ajouter un titre à la carte
     const title = document.createElement("h3");
     title.textContent = "Historique de l'utilisateur";
     const i_cross = document.createElement("i");
@@ -121,71 +120,201 @@ profile.addEventListener("click", function () {
     header.appendChild(title);
     header.appendChild(i_cross);
     settingsCard.appendChild(header);
-    wrapper_cog.appendChild(settingsCard)
-    document.body.appendChild(wrapper_cog)
-    const historique = JSON.parse(localStorage.getItem('historiqueFichiers'));
+    wrapper_cog.appendChild(settingsCard);
+    document.body.appendChild(wrapper_cog);
 
+    const searchBar = document.createElement("div");
+    searchBar.classList.add("search-bar");
 
-    historique.slice().reverse().forEach(fichier => {
-      const file_picture = document.createElement("div")
-      file_picture.classList.add("file_picture")
-      const file_picture_img = document.createElement("img")
-      file_picture_img.classList.add("file_picture_img")
-      file_picture_img.src = fichier.ref
-      const file_picture_info = document.createElement("div")
-      file_picture_info.classList.add("file_picture_info")
-      const file_picture_nom = document.createElement("p")
-      file_picture_nom.textContent = fichier.nom
-      const file_picture_taille = document.createElement("p")
-      file_picture_taille.textContent = (fichier.taille / (1024 * 1024)).toFixed(2) + ' MB';
-      const file_picture_date = document.createElement("p")
-      file_picture_date.textContent = new Date(fichier.date).toLocaleDateString('fr-FR');
+    const IsearchBar = document.createElement("div");
+    IsearchBar.classList.add("i_search-bar");
+    const I_search = document.createElement("i");
+    I_search.classList.add("bx", "bx-search");
+    const searchInput = document.createElement("input");
+    searchInput.type = "text";
+    searchInput.id = "search-input";
+    searchInput.placeholder = "Rechercher par nom ou date...";
+    searchBar.appendChild(IsearchBar);
+    IsearchBar.appendChild(I_search);
+    IsearchBar.appendChild(searchInput);
+    wrapper_cog.appendChild(searchBar);
 
+    const loadingSpinner = document.createElement("div");
+    loadingSpinner.classList.add("loading-spinner");
+    const spinnerIcon = document.createElement("i");
+    spinnerIcon.classList.add("bx", "bx-loader-alt");
+    loadingSpinner.appendChild(spinnerIcon);
+    wrapper_cog.appendChild(loadingSpinner);
+    // Simuler un délai de chargement (remplacez ceci par votre logique réelle)
+    setTimeout(() => {
+      // Supprimer le spinner de chargement une fois le chargement terminé
+      wrapper_cog.removeChild(loadingSpinner);
+      const historique = JSON.parse(localStorage.getItem('historiqueFichiers'));
+      let filteredHistorique = historique.slice().reverse();
+      let currentPage = 1;
+      const itemsPerPage = 3;
 
-      const file_picture_statut = document.createElement("div")
-      file_picture_statut.classList.add("file_picture_statut")
-      const file_picture_statut_i = document.createElement("i")
-      const statut = fichier.isDeleted ? 'Supprimé' : 'Uploadé';
-      const dateSuppression = fichier.isDeleted ? ` (Supprimé le : ${new Date(fichier.dateSuppression).toLocaleString()})` : '';
-      console.log(statut)
-      if (statut === "Supprimé") {
+      function formatDate(date) {
+        const today = new Date();
+        const fileDate = new Date(date);
 
-        file_picture_statut_i.classList.add("bx", "bx-x-circle")
-        file_picture_statut_i.style.color = "red"
-        const file_picture_date = document.createElement("p")
-        file_picture_date.textContent = dateSuppression
+        // Vérifier si la date du fichier correspond à aujourd'hui
+        if (
+          fileDate.getDate() === today.getDate() &&
+          fileDate.getMonth() === today.getMonth() &&
+          fileDate.getFullYear() === today.getFullYear()
+        ) {
 
-      } else {
+          // Si oui, retourner l'heure au format HH:MM
+          return fileDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+        } else {
 
-        file_picture_statut_i.classList.add("bx", "bx-check-circle")
+          // Sinon, retourner la date au format JJ/MM/AAAA
+          return fileDate.toLocaleDateString('fr-FR');
+        }
       }
-      const file_picture_reload = document.createElement("div")
-      file_picture_reload.classList.add("file_picture_reload")
-      const file_picture_reload_i = document.createElement("i")
-      file_picture_reload_i.classList.add("bx", "bx-link-external")
-      wrapper_cog.appendChild(file_picture)
-      file_picture.appendChild(file_picture_img)
-      file_picture.appendChild(file_picture_info)
-      file_picture_info.appendChild(file_picture_nom)
-      file_picture_info.appendChild(file_picture_taille)
-      file_picture_info.appendChild(file_picture_date)
-      file_picture.appendChild(file_picture_statut)
-      file_picture_statut.appendChild(file_picture_statut_i)
-      file_picture.appendChild(file_picture_reload)
-      file_picture_reload.appendChild(file_picture_reload_i)
-      file_picture_reload_i.addEventListener("click", function () {
-        Img_to_filter_img(fichier.ref)
-      })
 
+      function updatePagination(pageInfo, prevPageButton, nextPageButton) {
+        const totalPages = Math.ceil(filteredHistorique.length / itemsPerPage);
+        pageInfo.textContent = `Page ${currentPage} sur ${totalPages}`;
+        prevPageButton.disabled = currentPage === 1;
+        nextPageButton.disabled = currentPage === totalPages;
+      }
 
-    });
-    i_cross.addEventListener("click", function () {
-      reset_card();
-    });
+      function displayFiles() {
+        // Supprimer les anciens éléments .file_picture
+        wrapper_cog.querySelectorAll(".file_picture").forEach(el => el.remove());
 
+        // Créer et ajouter les nouveaux éléments .file_picture
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const pageFiles = filteredHistorique.slice(start, end);
 
+        pageFiles.forEach(fichier => {
+          const file_picture = document.createElement("div");
+          file_picture.classList.add("file_picture");
+          const file_picture_img = document.createElement("img");
+          file_picture_img.classList.add("file_picture_img");
+          file_picture_img.src = fichier.ref;
+          const file_picture_info = document.createElement("div");
+          file_picture_info.classList.add("file_picture_info");
+          const file_picture_nom = document.createElement("p");
+          let fileName = fichier.nom;
+          if (fileName.length >= 20) {
+            let splitName = fileName.split('.');
+            fileName = splitName[0].substring(0, 13) + '... .' + splitName[1];
+          }
+
+          file_picture_nom.textContent = fileName;
+          const file_picture_taille = document.createElement("p");
+          file_picture_taille.textContent = (fichier.taille / (1024 * 1024)).toFixed(2) + ' MB';
+          const file_picture_date = document.createElement("p");
+          file_picture_date.textContent = formatDate(fichier.date); // Utilisation de la fonction formatDate
+          file_picture_info.appendChild(file_picture_nom);
+          file_picture_info.appendChild(file_picture_taille);
+          file_picture_info.appendChild(file_picture_date);
+          const file_picture_statut = document.createElement("div");
+          file_picture_statut.classList.add("file_picture_statut");
+          const file_picture_statut_i = document.createElement("i");
+          const statut = fichier.isDeleted ? 'Supprimé' : 'Uploadé';
+          const dateSuppression = fichier.isDeleted ? ` (Supprimé le : ${new Date(fichier.dateSuppression).toLocaleString()})` : '';
+          if (statut === "Supprimé") {
+            file_picture_statut_i.classList.add("bx", "bx-x-circle");
+            file_picture_statut_i.style.color = "red";
+            const file_picture_date_suppression = document.createElement("p");
+            file_picture_date_suppression.textContent = dateSuppression;
+            file_picture_info.appendChild(file_picture_date_suppression);
+          } else {
+            file_picture_statut_i.classList.add("bx", "bx-check-circle");
+          }
+
+          const file_picture_reload = document.createElement("div");
+          file_picture_reload.classList.add("file_picture_reload");
+          const file_picture_reload_i = document.createElement("i");
+          file_picture_reload_i.classList.add("bx", "bx-link-external");
+
+          file_picture.appendChild(file_picture_img);
+          file_picture.appendChild(file_picture_info);
+
+          file_picture.appendChild(file_picture_statut);
+          file_picture_statut.appendChild(file_picture_statut_i);
+          file_picture.appendChild(file_picture_reload);
+          file_picture_reload.appendChild(file_picture_reload_i);
+          wrapper_cog.appendChild(file_picture);
+
+          file_picture_reload_i.addEventListener("click", function () {
+            Img_to_filter_img(fichier.ref);
+          });
+        });
+
+        // Créer et ajouter la pagination après les éléments .file_picture
+
+        const pagination = document.createElement("div");
+        pagination.classList.add("pagination");
+        const prevPageButton = document.createElement("button");
+        prevPageButton.id = "prev-page";
+        const i_prevPageButton = document.createElement("i");
+        i_prevPageButton.classList.add("bx", "bx-chevron-left")
+        const nextPageButton = document.createElement("button");
+        nextPageButton.id = "next-page";
+        const i_nextPageButton = document.createElement("i");
+        i_nextPageButton.classList.add("bx", "bx-chevron-right")
+
+        const pageInfo = document.createElement("span");
+        pageInfo.id = "page-info";
+        pagination.appendChild(prevPageButton);
+        prevPageButton.appendChild(i_prevPageButton)
+        pagination.appendChild(pageInfo);
+        pagination.appendChild(nextPageButton);
+        nextPageButton.appendChild(i_nextPageButton)
+        wrapper_cog.appendChild(pagination);
+
+        updatePagination(pageInfo, prevPageButton, nextPageButton);
+
+        // Gestion des événements de pagination
+        prevPageButton.addEventListener("click", function () {
+          if (currentPage > 1) {
+            currentPage--;
+            const pagination = document.querySelector(".wrapper_cog .pagination");
+
+            pagination.remove()
+            displayFiles();
+
+          }
+        });
+
+        nextPageButton.addEventListener("click", function () {
+          const totalPages = Math.ceil(filteredHistorique.length / itemsPerPage);
+          if (currentPage < totalPages) {
+            currentPage++;
+            const pagination = document.querySelector(".wrapper_cog .pagination");
+
+            pagination.remove()
+            displayFiles();
+          }
+        });
+      }
+
+      searchInput.addEventListener("input", function () {
+        const searchTerm = searchInput.value.toLowerCase();
+        filteredHistorique = historique.slice().reverse().filter(fichier => {
+          return fichier.nom.toLowerCase().includes(searchTerm) || fichier.date.toString().includes(searchTerm);
+        });
+        currentPage = 1;
+        const pagination = document.querySelector(".wrapper_cog .pagination");
+
+        pagination.remove()
+        displayFiles();
+      });
+
+      displayFiles();
+
+      i_cross.addEventListener("click", function () {
+        reset_card();
+      });
+    }, Math.floor(Math.random() * (Math.floor(2000) - Math.ceil(100) + 1)) + Math.ceil(100))
   }
-})
+});
 cog_btn.addEventListener("click", function () {
   const wrapper_cog = document.querySelector(".wrapper_cog");
   if (wrapper_cog) {
@@ -196,8 +325,8 @@ cog_btn.addEventListener("click", function () {
     const settingsCard = document.createElement("div");
     settingsCard.classList.add("settings-card");
     setTimeout(() => {
-      wrapper_cog.style.transform = "scale(100%) translateY(0%)";
-    }, 50);
+      wrapper_cog.style.transform = "scale(1) ";
+    }, 10);
 
     const header = document.createElement("div");
     header.classList.add("header-settings-card");
@@ -442,15 +571,18 @@ cog_btn.addEventListener("click", function () {
 function reset_card() {
   const card = document.querySelector(".wrapper_cog");
   if (card) {
-    card.style.transform = "scale(90%) translateY(10%)";
+    card.style.transform = "scale(0)";
     setTimeout(() => {
       card.remove();
-    }, 50);
+    }, 300);
   }
 }
 reload_btn.addEventListener("click", function () {
-  localStorage.removeItem("uploadedFiles");
-  window.location.href = "index.html";
+  popup_notif_create("Êtes-vous sûr de vouloir abandonner votre projet ?", true, true).then((confirmation) => {
+    if (confirmation) {
+      window.location.href = "index.html";
+    }
+  });
 });
 magic_btn.addEventListener("click", function () {
   function new_value_of_filter() {
@@ -614,6 +746,22 @@ let position_filter = [
     saturation: -10, // Réduire la saturation pour des couleurs plus douces
   }),
 ];
+
+function skeleton() {
+  const beforeImg = document.querySelector(
+    ".preview_right .image_preview .before_img"
+  );
+  const afterImg = document.querySelector(
+    ".preview_right .image_preview .after_img"
+  );
+  const nb_img_generer = document.querySelectorAll(".nb_img_generer img");
+  beforeImg.classList.add("skeleton")
+  afterImg.classList.add("skeleton")
+  nb_img_generer.forEach((img) => {
+    img.classList.add("skeleton")
+  })
+}
+skeleton()
 function Img_to_filter_img(image_pour_filtre) {
   let beforeImg = document.querySelector(
     ".preview_right .image_preview .before_img"
@@ -633,11 +781,15 @@ function Img_to_filter_img(image_pour_filtre) {
   img.src = image_pour_filtre;
   img.onload = function () {
     // Récupération des dimensions naturelles de l'image
-    const naturalWidth = img.naturalWidth;
-    const naturalHeight = img.naturalHeight;
+    let naturalWidth = img.naturalWidth;
+    let naturalHeight = img.naturalHeight;
 
     // Récupération de la largeur de l'écran
     const screenWidth = parseFloat(window.getComputedStyle(document.body).getPropertyValue("width"));
+    const screenHeight = parseFloat(window.getComputedStyle(document.body).getPropertyValue("height"));
+
+
+
     console.log(screenWidth)
     if ((naturalWidth > 850 || naturalHeight > 670) && screenWidth > 738) {
       // Si l'image est grande, réduction de moitié
@@ -967,5 +1119,59 @@ if (uploadedFiles.length > 0) {
   Img_to_filter_img(uploadedFile.ref)
 }
 
+function popup_notif_create(text_popup, valid, annul) {
+  return new Promise((resolve, reject) => {
+    const existingPopup = document.querySelector(".popup_notif");
+    if (existingPopup) {
+      existingPopup.classList.add("shake");
+      setTimeout(() => {
+        existingPopup.classList.remove("shake");
+      }, 200);
+      return;
+    }
 
+    const popup_notif = document.createElement("div");
+    popup_notif.classList.add("popup_notif");
+    setTimeout(() => {
+      popup_notif.classList.add("active"); // Animation d'entrée
+    }, 10);
+
+    document.body.appendChild(popup_notif);
+
+    const popup_text = document.createElement("h4");
+    popup_text.textContent = text_popup;
+    popup_text.style.textAlign = "center"; // Centrage du texte
+    popup_notif.appendChild(popup_text);
+
+    const popup_btn = document.createElement("div");
+    popup_btn.classList.add("popup_notif_btn");
+    popup_notif.appendChild(popup_btn);
+
+    if (valid) {
+      const popup_btn_valid = document.createElement("button");
+      popup_btn_valid.textContent = "Validez";
+      popup_btn.appendChild(popup_btn_valid);
+      popup_btn_valid.addEventListener("click", () => {
+        popup_notif.style.transform = "scale(0)"; // Animation de sortie
+        setTimeout(() => {
+          popup_notif.remove();
+        }, 300);
+        resolve(true); // Résout la promesse avec `true`
+      });
+    }
+
+    if (annul) {
+      const popup_btn_annul = document.createElement("button");
+      popup_btn_annul.textContent = "Annulez";
+      popup_btn.appendChild(popup_btn_annul);
+      popup_btn_annul.addEventListener("click", () => {
+        popup_notif.style.transform = "scale(0)"; // Animation de sortie
+        setTimeout(() => {
+          popup_notif.remove();
+        }, 300);
+        resolve(false); // Résout la promesse avec `false`
+      });
+    }
+  });
+}
 
