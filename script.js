@@ -147,47 +147,70 @@ const imageDisplay = document.getElementById("image_display");
 
 // Ajoutez un événement pour détecter les changements de l'input
 linkImg.addEventListener("keydown", function (event) {
-    // Vérifier si l'utilisateur est dans l'input et appuie sur la touche "Entrée"
-    if (event.key === "Enter" && document.activeElement === linkImg) {
-        let uploadedFiles = JSON.parse(localStorage.getItem("uploadedFiles")) || [];
+    // Vérifie si la touche est un caractère imprimable
+    const isPrintable = event.key.length === 1 && !event.ctrlKey && !event.metaKey;
 
-        if (uploadedFiles.length > 0) {
-            // Si un fichier est déjà téléchargé, afficher une alerte et réinitialiser l'entrée
-            alert("Vous devez supprimer votre fichier téléchargé");
-            linkImg.value = "";
-        } else {
-            const imageUrl = linkImg.value;
-
-            if (imageUrl) {
-                // Si un lien d'image est fourni, l'afficher et l'ajouter à localStorage
-                imageDisplay.src = imageUrl;
-                imageDisplay.style.display = "block"; // Affiche l'image si un lien est présent
-                const match = imageUrl.match(/\/([^\/]+\.(jpg|jpeg|png))$/i);
-                const name_all = match ? match[1] : null;
-                let name = name_all
-                if (name_all.length >= 12) {
-                    let splitName = name_all.split('.');
-                    name = splitName[0].substring(0, 13) + '... .' + splitName[1];
-                }
-                uploadedFiles.push({ name, size: 0, ref: imageUrl, type: "link" });
-                localStorage.setItem("uploadedFiles", JSON.stringify(uploadedFiles));
-            } else {
-                // Cache l'image si aucun lien n'est présent
-                imageDisplay.style.display = "none";
-            }
-        }
+    if (isPrintable) {
+        handleImageInput(event); // Appel de la fonction uniquement pour les caractères imprimables
     }
 });
-linkImg.addEventListener("input", function () {
-    let uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || [];
 
+
+linkImg.addEventListener("input", function (event) {
+    handleImageInput(event); // Appel immédiat dès la saisie d'un nouveau caractère
+});
+function handleImageInput(event) {
+    let uploadedFiles = JSON.parse(localStorage.getItem("uploadedFiles")) || [];
+
+    // Si un fichier existe déjà, bloquer et vider l'entrée
     if (uploadedFiles.length > 0) {
-        let uploadedFile = uploadedFiles[0]; // Il n'y a qu'un seul fichier dans le localStorage
-        alert("Vous devez supprimer votre fichier télécharger")
-        linkImg.value = ""
+        popup_notif_create("Vous devez supprimer votre fichier téléchargé", "oui");
+        linkImg.value = "";
+        return; // Sortir de la fonction
     }
-})
 
+    const imageUrl = linkImg.value.trim(); // Enlever les espaces au début et à la fin
+
+    if (imageUrl) {
+        const img = new Image(); // Crée un objet Image
+        img.src = imageUrl;
+
+        img.onload = function () { // Vérifie si l'image est valide
+            // Afficher et traiter l'image
+            imageDisplay.src = imageUrl;
+            imageDisplay.style.display = "block";
+
+            const match = imageUrl.split('/').pop(); // Extraire la dernière partie de l'URL
+            const name_all = match.split('?')[0]; // Retirer les paramètres après '?'
+
+            let name = name_all;
+            if (name_all.length >= 12) {
+                let splitName = name_all.split('.');
+                if (splitName.length > 1) {
+                    // Cas avec extension
+                    name = splitName[0].substring(0, 13) + '... .' + splitName[1];
+                } else {
+                    // Cas sans extension
+                    name = name_all.substring(0, 13) + '...';
+                }
+            }
+
+            // Ajouter au stockage local et à l'historique
+            ajouterLienAuHistorique(name, 0, imageUrl);
+            uploadedFiles.push({ name, size: 0, ref: imageUrl, type: "link" });
+            localStorage.setItem("uploadedFiles", JSON.stringify(uploadedFiles));
+        };
+
+        img.onerror = function () { // Si l'image est invalide
+            popup_notif_create("L'image n'existe pas ou le lien est invalide.", "non");
+            imageDisplay.style.display = "none"; // Cache l'image
+        };
+    }
+    else {
+        // Masquer l'image si aucune URL n'est fournie
+        imageDisplay.style.display = "none";
+    }
+}
 // Optionnel : masquer l'image au départ si aucun lien n'est entré
 fileInput.onchange = ({ target }) => {
     let file = target.files[0];
@@ -319,7 +342,7 @@ function uploadFile(name, file) {
             let uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || [];
 
             if (uploadedFiles.length >= 1) {
-                alert("Vous avez déjà téléchargé un fichier. Supprimez-le pour en télécharger un autre.");
+                popup_notif_create("Vous avez déjà téléchargé un fichier. Supprimez-le pour en télécharger un autre.", "oui")
                 return;
             }
 
@@ -372,6 +395,36 @@ function ajouterFichierAuHistorique(file) {
         localStorage.setItem('historiqueFichiers', JSON.stringify(historique));
     });
     reader.readAsDataURL(file);
+
+}
+function ajouterLienAuHistorique(name, size, ref) {
+    const historique = JSON.parse(localStorage.getItem('historiqueFichiers'));
+
+
+    const nouvelElement = {
+        nom: name,
+        taille: size,
+        date: new Date().toISOString(),
+        ref: ref,
+        isDeleted: false, // Le fichier n'est pas supprimé
+        reglage: {
+            exposition: 0, // Réduire légèrement l'exposition pour éviter la surexposition
+            contraste: -5, // Augmenter le contraste pour plus de profondeur
+            hautesLumieres: 10, // Modérer l'intensité des hautes lumières
+            ombres: -10, // Légèrement éclaircir les ombres pour plus de détails
+            blancs: 20, // Réduire légèrement les blancs pour éviter la surexposition
+            noirs: -25, // Renforcer les noirs pour plus de profondeur
+            temperature: 20, // Ajouter des tons chauds, mais sans trop saturer
+            teinte: -30, // Garder une légère teinte chaude pour ne pas altérer l'équilibre
+            vibrance: 10, // Augmenter la vibrance de manière plus modérée
+            saturation: 15, // Renforcer les couleurs sans surcharger
+        },
+    };
+    // Ajoute le fichier si la limite de 1 fichier n'est pas dépassée
+
+    historique.push(nouvelElement);
+    localStorage.setItem('historiqueFichiers', JSON.stringify(historique));
+
 
 }
 function delete_file() {
