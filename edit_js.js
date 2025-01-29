@@ -249,8 +249,8 @@ profile.addEventListener("click", function () {
 
           file_picture_reload_i.addEventListener("click", function () {
             const reglage_pref = localStorage.getItem("Reglage")
-
-            Img_to_filter_img(fichier.ref, reglage_pref);
+            const reglage_value = JSON.parse(reglage_pref);
+            Img_to_filter_img(fichier.ref, reglage_value);
           });
         });
 
