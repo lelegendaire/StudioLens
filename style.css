@@ -462,7 +462,7 @@ body {
   width: 400px;
   transform: scale(0);
   border-radius: 20px;
-  background-color: #1d1b1bc7;
+  background-color: #292929;
   backdrop-filter: blur(5px);
   position: absolute;
   top: 15%;
@@ -519,7 +519,7 @@ body {
   -webkit-appearance: none;
   min-width: 100%;
   cursor: pointer;
-  background-color: #2e2a2a;
+  background-color: #191616;
   border-radius: 50px;
   height: 5px;
   color: #009611;
@@ -800,8 +800,8 @@ body {
 }
 .file_picture {
   display: flex;
-  border-radius: 1rem;
-  padding: 10px;
+  border-radius: 0.8rem;
+  padding: 0.5rem;
   border: 2px solid white;
   align-items: center;
   margin: 10px;
@@ -858,11 +858,12 @@ body {
   justify-content: center;
   margin: 10px 0;
   align-items: center;
-  border: 2px solid #ffffff;
+  border: 2px solid #554e4e;
   margin-bottom: 20px;
   border-radius: 0.5rem;
   width: 80%;
   color: white;
+  background: #363636;
 }
 
 .search-bar input {
