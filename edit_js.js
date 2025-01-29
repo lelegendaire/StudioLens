@@ -207,7 +207,12 @@ profile.addEventListener("click", function () {
 
           file_picture_nom.textContent = fileName;
           const file_picture_taille = document.createElement("p");
-          file_picture_taille.textContent = (fichier.taille / (1024 * 1024)).toFixed(2) + ' MB';
+          if (fichier.taille === 0) {
+            file_picture_taille.textContent = "Lien";
+          } else {
+
+            file_picture_taille.textContent = (fichier.taille / (1024 * 1024)).toFixed(2) + ' MB';
+          }
           const file_picture_date = document.createElement("p");
           file_picture_date.textContent = formatDate(fichier.date); // Utilisation de la fonction formatDate
           file_picture_info.appendChild(file_picture_nom);
@@ -243,7 +248,9 @@ profile.addEventListener("click", function () {
           wrapper_cog.appendChild(file_picture);
 
           file_picture_reload_i.addEventListener("click", function () {
-            Img_to_filter_img(fichier.ref);
+            const reglage_pref = localStorage.getItem("Reglage")
+
+            Img_to_filter_img(fichier.ref, reglage_pref);
           });
         });
 
@@ -524,7 +531,6 @@ cog_btn.addEventListener("click", function () {
     // Ajouter le wrapper au body
     document.body.appendChild(wrapper_cog);
     document.querySelectorAll('input[type="range"]').forEach((slider) => {
-      console.log("yes");
       slider.addEventListener("input", updateImage);
     });
     function updateImage() {
@@ -550,7 +556,13 @@ cog_btn.addEventListener("click", function () {
           ),
         };
       }
+
       let variable_personnalise = getFilterValues();
+      // Convertir l'objet en chaîne JSON
+      const variable_personnalise_local = JSON.stringify(variable_personnalise);
+
+      // Stocker dans le localStorage
+      localStorage.setItem("Reglage", variable_personnalise_local);
       const beforeImg = document.querySelector(
         ".preview_right .image_preview .before_img"
       );
@@ -747,22 +759,8 @@ let position_filter = [
   }),
 ];
 
-function skeleton() {
-  const beforeImg = document.querySelector(
-    ".preview_right .image_preview .before_img"
-  );
-  const afterImg = document.querySelector(
-    ".preview_right .image_preview .after_img"
-  );
-  const nb_img_generer = document.querySelectorAll(".nb_img_generer img");
-  beforeImg.classList.add("skeleton")
-  afterImg.classList.add("skeleton")
-  nb_img_generer.forEach((img) => {
-    img.classList.add("skeleton")
-  })
-}
-skeleton()
-function Img_to_filter_img(image_pour_filtre) {
+
+function Img_to_filter_img(image_pour_filtre, reglage) {
   let beforeImg = document.querySelector(
     ".preview_right .image_preview .before_img"
   );
@@ -879,11 +877,11 @@ function Img_to_filter_img(image_pour_filtre) {
     );
 
     afterImg.style.backgroundImage =
-      "url(" + displayFilteredImage(img, variable_couleur_sunset) + ")";
+      "url(" + displayFilteredImage(img, reglage) + ")";
 
     nb_img_generer[0].src = displayFilteredImage(
       img,
-      variable_couleur_sunset
+      reglage
     );
     nb_img_generer[1].src = displayFilteredImage(
       img,
@@ -1116,7 +1114,10 @@ let uploadedFiles = JSON.parse(localStorage.getItem("uploadedFiles")) || [];
 
 if (uploadedFiles.length > 0) {
   let uploadedFile = uploadedFiles[0]; // Il n'y a qu'un seul fichier dans le localStorage
-  Img_to_filter_img(uploadedFile.ref)
+  if (uploadedFiles.type === "link") {
+    console.log("link")
+  }
+  Img_to_filter_img(uploadedFile.ref, variable_couleur_sunset)
 }
 
 function popup_notif_create(text_popup, valid, annul) {
