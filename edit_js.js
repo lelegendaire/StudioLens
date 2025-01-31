@@ -445,6 +445,7 @@ cog_btn.addEventListener("click", function () {
     parameters.forEach((param) => {
       imgs_edit.forEach((img_selected, i) => {
         if (img_selected.classList.contains("select")) {
+          const reglage_pref = JSON.parse(localStorage.getItem("Reglage"))
           const originalValue = value_filter?.[i]?.[param.id] !== undefined
             ? value_filter[i][param.id]  // Utilisez `value_filter` si disponible
             : position_filter[i][param.id]; // Sinon, utilisez `position_filter`
@@ -456,7 +457,7 @@ cog_btn.addEventListener("click", function () {
           input.id = param.id;
           input.min = param.min;
           input.max = param.max;
-          input.value = value !== undefined ? value : param.defaultValue; // Utilise la valeur correspondante ou une valeur par défaut
+          input.value = value !== undefined ? value : reglage_pref[i]; // Utilise la valeur correspondante ou une valeur par défaut
           input.step = param.step;
 
           const valueSpan = document.createElement("span");
