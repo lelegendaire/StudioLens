@@ -457,7 +457,7 @@ cog_btn.addEventListener("click", function () {
           input.id = param.id;
           input.min = param.min;
           input.max = param.max;
-          input.value = value !== undefined ? value : reglage_pref[i]; // Utilise la valeur correspondante ou une valeur par défaut
+          input.value = value !== undefined ? value : reglage_pref[param.id]; // Utilise la valeur correspondante ou une valeur par défaut
           input.step = param.step;
 
           const valueSpan = document.createElement("span");
