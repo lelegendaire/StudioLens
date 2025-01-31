@@ -313,7 +313,7 @@ body {
   font-size: 19px;
   gap: 5px;
   color: gray;
-  background: hsl(0deg 0% 0% / 50%);
+  background: #292929;
   border-radius: 50px;
   padding: 5px 10px;
 
@@ -837,6 +837,7 @@ body {
   color: white;
   display: flex;
   align-items: center;
+  margin-right: 7px;
 }
 .file_picture_reload::before {
   content: "";
