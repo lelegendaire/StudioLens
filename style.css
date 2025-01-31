@@ -802,11 +802,9 @@ body {
   display: flex;
   border-radius: 0.8rem;
   padding: 0.5rem;
-  border: 2px solid white;
   align-items: center;
   margin: 10px;
-  background: #161515;
-  box-shadow: inset 0px 0px 19px 0px black;
+  background: #363636;
 }
 .file_picture_img {
   width: 50px;
