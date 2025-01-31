@@ -466,6 +466,7 @@ function delete_file() {
 }
 function supprimerFichier() {
     const historique = JSON.parse(localStorage.getItem('historiqueFichiers'));
+    const reglage = JSON.parse(localStorage.getItem('Reglage'));
     let uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || [];
     if (uploadedFiles.length > 0) {
         let uploadedFile = uploadedFiles[0]; // Il n'y a qu'un seul fichier dans le localStorage
@@ -477,6 +478,7 @@ function supprimerFichier() {
         console.log(index)
         historique[index].isDeleted = true; // Marque comme supprimé
         historique[index].dateSuppression = new Date().toISOString(); // Ajoute la date de suppression
+        historique[index].reglage = reglage
         localStorage.setItem('historiqueFichiers', JSON.stringify(historique));
     } else {
         console.log(index)
