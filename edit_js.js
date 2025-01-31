@@ -226,9 +226,7 @@ profile.addEventListener("click", function () {
           if (statut === "Supprimé") {
             file_picture_statut_i.classList.add("bx", "bx-x-circle");
             file_picture_statut_i.style.color = "red";
-            const file_picture_date_suppression = document.createElement("p");
-            file_picture_date_suppression.textContent = dateSuppression;
-            file_picture_info.appendChild(file_picture_date_suppression);
+            file_picture_date.textContent = formatDate(fichier.date) + "|" + dateSuppression; // Utilisation de la fonction formatDate
           } else {
             file_picture_statut_i.classList.add("bx", "bx-check-circle");
           }
