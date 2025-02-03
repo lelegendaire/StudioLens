@@ -176,9 +176,7 @@ function handleImageInput(event) {
         img.src = imageUrl;
 
         img.onload = function () { // Vérifie si l'image est valide
-            // Afficher et traiter l'image
-            imageDisplay.src = imageUrl;
-            imageDisplay.style.display = "block";
+            
 
             const match = imageUrl.split('/').pop(); // Extraire la dernière partie de l'URL
             const name_all = match.split('?')[0]; // Retirer les paramètres après '?'
@@ -194,7 +192,24 @@ function handleImageInput(event) {
                     name = name_all.substring(0, 13) + '...';
                 }
             }
-
+            let uploadedHTML = `<li class="row">
+            <div class="content upload">
+                <div class="img_view"><img src="${imageUrl}"></div>
+                <i class='bx bx-link'></i>
+                <div class="details">
+                    
+                    <span class="name">${name} • Enregistré</span>
+                    <span class="size">Lien</span>
+                </div> 
+            </div>
+           
+             <div class="icon">
+        <button class="delete-btn"><i class="bx bx-trash"></i></button>
+        <i class='bx bx-check'></i>
+        </div>
+        </li>
+        <div class="separator2"></div>`;
+                    uploadedArea.innerHTML = uploadedHTML;
             // Ajouter au stockage local et à l'historique
             ajouterLienAuHistorique(name, 0, imageUrl);
             uploadedFiles.push({ name, size: 0, ref: imageUrl, type: "link" });
@@ -239,6 +254,7 @@ function displayUploadedFile() {
         if (uploadedFile.type === "link") {
             let uploadedHTML = `<li class="row">
     <div class="content upload">
+    <div class="img_view"><img src="${uploadedFile.ref}"></div>
         <i class='bx bx-link'></i>
         <div class="details">
             <span class="name">${uploadedFile.name} • Enregistré</span>

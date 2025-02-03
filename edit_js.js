@@ -9,6 +9,7 @@ const reload_btn = document.querySelector(".settings i.bx-refresh");
 const magic_btn = document.querySelector(".settings i.bxs-magic-wand");
 const img = document.querySelector(".image_preview .after_img");
 const dragLine = document.querySelector(".slider .drag-line");
+const nb_img_generer_image = document.querySelectorAll(".nb_img_generer .image");
 const parameters = [
   {
     id: "exposition",
@@ -107,7 +108,7 @@ profile.addEventListener("click", function () {
     const settingsCard = document.createElement("div");
     settingsCard.classList.add("settings-card");
     setTimeout(() => {
-      wrapper_cog.style.transform = "scale(1)";
+      wrapper_cog.classList.add("reveal");
     }, 50);
 
     const header = document.createElement("div");
@@ -330,7 +331,7 @@ cog_btn.addEventListener("click", function () {
     const settingsCard = document.createElement("div");
     settingsCard.classList.add("settings-card");
     setTimeout(() => {
-      wrapper_cog.style.transform = "scale(1) ";
+      wrapper_cog.classList.add("reveal")
     }, 10);
 
     const header = document.createElement("div");
@@ -788,15 +789,24 @@ function Img_to_filter_img(image_pour_filtre, reglage) {
 
 
     console.log(screenWidth)
-    if ((naturalWidth > 850 || naturalHeight > 670) && screenWidth > 738) {
+    console.log(screenHeight)
+    console.log(naturalWidth)
+     
+    while ((naturalWidth > 850 || naturalHeight > 670) && screenWidth > 738) {
       // Si l'image est grande, réduction de moitié
-      const reducedWidth = naturalWidth / 2;
-      const reducedHeight = naturalHeight / 2;
-
-      image_preview.style.width = reducedWidth + "px";
-      image_preview.style.height = reducedHeight + "px";
-      drag_line.style.height = reducedHeight + "px";
-    } else if (screenWidth < 738) {
+      naturalWidth /= 1.1
+      naturalHeight /= 1.1
+    } 
+    const reducedWidth = naturalWidth;
+    const reducedHeight = naturalHeight;
+    image_preview.style.width = reducedWidth + "px";
+    image_preview.style.height = reducedHeight + "px";
+    drag_line.style.height = reducedHeight + "px";
+    nb_img_generer_image.forEach((img_rescale) =>{
+      img_rescale.style.height = (screenHeight/6) + "px";
+      img_rescale.style.width = (150 * (screenHeight/6))/120 + "px";
+    })
+     if (screenWidth < 738) {
       // Si la largeur de l'écran est petite, ajuster en fonction de la largeur de l'écran
       const scaledHeight = (screenWidth * naturalHeight) / naturalWidth;
 

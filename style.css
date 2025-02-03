@@ -172,6 +172,25 @@ body {
     transform: scale(1); /* Retour à la taille normale */
   }
 }
+.img_view{
+  display: flex;
+  align-items: center;
+}
+.img_view img{
+  height: 50px;
+  width: 50px;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+.img_view img:hover{
+  position: absolute;
+  height: 250px;
+  width: 250px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
 .wrapper_img {
   display: flex;
   width: 100%;
@@ -457,6 +476,9 @@ body {
   border-color: #7a9bef;
   box-shadow: 0 0 3px 3px #6990f2;
 }
+.wrapper_cog.reveal{
+  transform: scale(1);
+}
 .wrapper_cog {
   height: 500px;
   width: 400px;
@@ -666,16 +688,16 @@ body {
   position: fixed;
   top: 1%;
   transform: scale(0); /* Centré et réduit */
-  background: hsla(0, 0%, 16%, 0.5);
+  background: #292929;
   backdrop-filter: blur(5px);
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   padding: 15px;
-  border-radius: 15px;
-  width: 380px;
-  min-height: 60px;
+  border-radius: 35px;
+  width: max-content;
+  min-height: 30px;
   color: white;
   display: flex;
-  flex-direction: column;
+  /*flex-direction: column;*/
   align-items: center; /* Centrage du texte */
   justify-content: center;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -683,7 +705,7 @@ body {
 }
 
 .popup_notif.active {
-  transform: scale(1); /* Animation d'entrée */
+  transform: scale(0.75); /* Animation d'entrée */
 }
 
 .popup_notif.shake {
@@ -713,11 +735,11 @@ body {
 .popup_notif_btn {
   display: flex;
   gap: 15px;
-  margin-top: 20px;
+  margin-left: 20px;
 }
 
 .popup_notif_btn button {
-  padding: 10px 20px;
+  padding: 8px 16px;
   border-radius: 25px;
   border: none;
   font-size: 16px;
@@ -734,18 +756,16 @@ body {
 
 .popup_notif_btn button:nth-child(1):hover {
   background: #0a2b9e;
-  transform: translateY(-2px);
   box-shadow: 0 6px 10px rgba(12, 54, 190, 0.3);
 }
 
 .popup_notif_btn button:nth-child(2) {
-  background: #9e0c0c;
+  background: #363636;
   color: white;
 }
 
 .popup_notif_btn button:nth-child(2):hover {
-  background: #6e0606;
-  transform: translateY(-2px);
+  background: #141414;
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
 }
 @media only screen and (min-width: 320px) and (max-width: 768px) and (orientation: portrait) {
@@ -794,8 +814,14 @@ body {
   .settings-card .paramètre_chaque_couleur {
     width: 100vw;
   }
-  .popup_notif {
-    width: 90vw;
+  
+}
+@media only screen and (min-width: 1024px) and (max-width: 1600px){
+  .wrapper {
+    transform: scale(0.9);
+  }
+  .wrapper_cog.reveal {
+    transform: scale(0.8);
   }
 }
 .file_picture {
