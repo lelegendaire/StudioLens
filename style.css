@@ -952,3 +952,27 @@ body {
     transform: rotate(360deg);
   }
 }
+.bottom_para{
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+.ajout_save_reg{
+  display: flex;
+  margin-left: auto;
+  color: #4f4e53;
+}
+.ajout_save_reg::after{
+  content: "";
+  height: 30px;
+  width: 3px;
+  border-radius: 15px;
+  background-color: #4f4e53;
+  margin: 0px 15px 0px 10px;
+}
+.btn_save_reg{
+  display: flex;
+}
+.First_regl{
+  border-radius: 50%;
+}

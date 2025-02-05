@@ -445,7 +445,10 @@ cog_btn.addEventListener("click", function () {
       imgs_edit.forEach((img_selected, i) => {
         if (img_selected.classList.contains("select")) {
           const reglage_pref = JSON.parse(localStorage.getItem("Reglage"))
-          const originalValue = value_filter?.[i]?.[param.id] !== undefined
+          console.log(reglage_pref[param.id])
+          const originalValue = reglage_pref[param.id] !== undefined
+          ? reglage_pref[param.id] // Valeur sauvegardée
+          : value_filter?.[i]?.[param.id] !== undefined
             ? value_filter[i][param.id]  // Utilisez `value_filter` si disponible
             : position_filter[i][param.id]; // Sinon, utilisez `position_filter`
           const label = document.createElement("label");
@@ -456,7 +459,8 @@ cog_btn.addEventListener("click", function () {
           input.id = param.id;
           input.min = param.min;
           input.max = param.max;
-          input.value = value !== undefined ? value : param.defaultValue; // Utilise la valeur correspondante ou une valeur par défaut
+          console.log(value)
+          input.value = value !== undefined ? value : reglage_pref[param.id]; // Utilise la valeur correspondante ou une valeur par défaut
           input.step = param.step;
 
           const valueSpan = document.createElement("span");
@@ -514,6 +518,10 @@ cog_btn.addEventListener("click", function () {
       paramètre_chaque_couleur.appendChild(couleur_div);
       settingsCard.appendChild(paramètre_chaque_couleur);
     });
+
+    
+
+
     const btn_save = document.createElement("button");
     btn_save.classList.add("btn_save");
     btn_save.textContent = "Sauvegarder";
@@ -524,6 +532,7 @@ cog_btn.addEventListener("click", function () {
       reset_card();
     });
     i_cross.addEventListener("click", function () {
+      updateImage();
       reset_card();
     });
     wrapper_cog.appendChild(settingsCard);
@@ -656,7 +665,7 @@ download_btn.addEventListener("click", function () {
   // Supprimer le lien après le téléchargement
   document.body.removeChild(link);
 });
-imgs_edit.forEach((img) => {
+imgs_edit.forEach((img,i) => {
   img.addEventListener("click", function () {
     const imgSrc = img.src;
     imgs_edit.forEach((image) => {
@@ -670,6 +679,9 @@ imgs_edit.forEach((img) => {
     );
 
     afterImg.style.backgroundImage = "url(" + imgSrc + ")";
+    
+    localStorage.setItem("Reglage", JSON.stringify(position_filter[i])); 
+
   });
 });
 let position_filter = [
@@ -1120,13 +1132,18 @@ function displayFilteredImage(img, filters) {
   return canvas.toDataURL();
 }
 let uploadedFiles = JSON.parse(localStorage.getItem("uploadedFiles")) || [];
-
+const reglage_pref = JSON.parse(localStorage.getItem("Reglage"))
 if (uploadedFiles.length > 0) {
   let uploadedFile = uploadedFiles[0]; // Il n'y a qu'un seul fichier dans le localStorage
   if (uploadedFiles.type === "link") {
     console.log("link")
   }
-  Img_to_filter_img(uploadedFile.ref, variable_couleur_sunset)
+  if(reglage_pref){
+    Img_to_filter_img(uploadedFile.ref, reglage_pref)
+  } else{
+
+    Img_to_filter_img(uploadedFile.ref, variable_couleur_sunset)
+  }
 }
 
 function popup_notif_create(text_popup, valid, annul) {
