@@ -445,7 +445,6 @@ cog_btn.addEventListener("click", function () {
       imgs_edit.forEach((img_selected, i) => {
         if (img_selected.classList.contains("select")) {
           const reglage_pref = JSON.parse(localStorage.getItem("Reglage"))
-          console.log(reglage_pref[param.id])
           const originalValue = reglage_pref[param.id] !== undefined
           ? reglage_pref[param.id] // Valeur sauvegardée
           : value_filter?.[i]?.[param.id] !== undefined
@@ -459,7 +458,6 @@ cog_btn.addEventListener("click", function () {
           input.id = param.id;
           input.min = param.min;
           input.max = param.max;
-          console.log(value)
           input.value = value !== undefined ? value : reglage_pref[param.id]; // Utilise la valeur correspondante ou une valeur par défaut
           input.step = param.step;
 
@@ -800,9 +798,7 @@ function Img_to_filter_img(image_pour_filtre, reglage) {
 
 
 
-    console.log(screenWidth)
-    console.log(screenHeight)
-    console.log(naturalWidth)
+
      
     while ((naturalWidth > 850 || naturalHeight > 670) && screenWidth > 738) {
       // Si l'image est grande, réduction de moitié
